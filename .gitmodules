@@ -1,0 +1,3 @@
+[submodule "diff-hl"]
+	path = diff-hl
+	url = https://github.com/dgutov/diff-hl
