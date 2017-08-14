@@ -13,6 +13,7 @@
 (package-initialize)
 
 
+
 ; fetch the list of packages available 
 (unless package-archive-contents
   (package-refresh-contents))
@@ -67,6 +68,16 @@
 	  (if this-win-2nd (other-window 1))))))
 
 (define-key ctl-x-4-map "t" 'toggle-window-split)
+
+
+;; backup save dir
+(defun make-backup-file-name (FILE)                                             
+  (let ((dirname (concat "~/.emacs.d/backups/"                                    
+                         (format-time-string "%y/%m/%d/"))))                    
+    (if (not (file-exists-p dirname))                                           
+        (make-directory dirname t))                                             
+    (concat dirname (file-name-nondirectory FILE))))
+
 
 
 

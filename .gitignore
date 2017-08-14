@@ -1,4 +1,8 @@
-**/.idea/
 **/auto-save-list/
 **/diff-hl/
 **/var/
+**/backups/
+**/elpa/
+ac-comphist.dat
+
+
