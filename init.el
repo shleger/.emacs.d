@@ -140,10 +140,12 @@
 )
 
 
+;; INSERT PAIR BRACKET
+(electric-pair-mode)
 
 ;; HOOKS
-(add-hook 'go-mode-hook 'my-go-mode-hook)
-(add-hook 'go-mode-hook #'go-guru-hl-identifier-mode)
+(add-hook 'go-mode-hook 'my-go-mode-hook)                  
+(add-hook 'go-mode-hook #'go-guru-hl-identifier-mode)    ; Very slow on Windows ((
 
 ;; Call Gofmt before saving
 (add-hook 'before-save-hook 'gofmt-before-save)
