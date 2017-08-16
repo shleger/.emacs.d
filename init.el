@@ -1,6 +1,6 @@
 ;;https://stackoverflow.com/questions/10092322/how-to-automatically-install-emacs-packages-by-specifying-a-list-of-package-name
 ;; list the packages you want
-(setq package-list '( go-mode go-eldoc company company-go yasnippet go-rename multi-compile flycheck gotest go-scratch go-direx exec-path-from-shell go-guru auto-complete go-autocomplete  ))
+(setq package-list '( go-mode go-eldoc company company-go yasnippet go-rename multi-compile flycheck gotest go-scratch go-direx exec-path-from-shell go-guru auto-complete go-autocomplete neotree))
 
 ;; Added by Package.el.  This must come before configurations of
 ;; installed packages.  Don't delete this line.  If you don't want it,
@@ -107,6 +107,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(neo-file-link-face ((t :inherit default)))
  )
 
 
@@ -121,7 +122,16 @@
 (require 'company-go)
 (require 'go-autocomplete)
 (require 'auto-complete-config)
+(require 'neotree)
+
+
 (ac-config-default)
+
+;;neoTree
+(setq neo-theme 'ascii)
+(setq neo-smart-open t)
+(global-set-key [f8] 'neotree-toggle)
+
 
 ;;autosave
 (defun auto-complete-for-go ()
