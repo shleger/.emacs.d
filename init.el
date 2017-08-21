@@ -107,8 +107,9 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(neo-file-link-face ((t :inherit default)))
- )
+ '(go-guru-hl-identified-face ((t (:background "SkyBlue"))))
+ '(highlight ((t (:background "darkseagreen2" :foreground "cyan"))))
+ '(neo-file-link-face ((t :inherit default))))
 
 
 ;;(require 'package)
