@@ -107,6 +107,12 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(diff-added ((t (:inherit diff-changed :background "green"))))
+ '(diff-file-header ((t (:background "color-17" :weight bold))))
+ '(diff-function ((t (:inherit diff-header :background "color-241"))))
+ '(diff-header ((t (:background "color-17"))))
+ '(diff-hunk-header ((t (:inherit diff-header :background "color-241"))))
+ '(diff-removed ((t (:inherit diff-changed :background "red"))))
  '(go-guru-hl-identified-face ((t (:background "SkyBlue"))))
  '(highlight ((t (:background "darkseagreen2" :foreground "cyan"))))
  '(neo-file-link-face ((t :inherit default))))
