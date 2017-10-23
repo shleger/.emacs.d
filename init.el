@@ -130,6 +130,10 @@
 (require 'go-autocomplete)
 (require 'auto-complete-config)
 (require 'neotree)
+
+;install godoctor before
+;go get github.com/godoctor/godoctor
+;go install github.com/godoctor/godoctor
 (require 'godoctor)
 
 
