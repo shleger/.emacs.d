@@ -1,6 +1,6 @@
 ;;https://stackoverflow.com/questions/10092322/how-to-automatically-install-emacs-packages-by-specifying-a-list-of-package-name
 ;; list the packages you want
-(setq package-list '( go-mode go-eldoc company company-go yasnippet go-rename multi-compile flycheck gotest go-scratch go-direx exec-path-from-shell go-guru auto-complete go-autocomplete neotree))
+(setq package-list '( go-mode go-eldoc company company-go yasnippet go-rename multi-compile flycheck gotest go-scratch go-direx exec-path-from-shell go-guru godoctor auto-complete go-autocomplete neotree))
 
 ;; Added by Package.el.  This must come before configurations of
 ;; installed packages.  Don't delete this line.  If you don't want it,
@@ -130,6 +130,7 @@
 (require 'go-autocomplete)
 (require 'auto-complete-config)
 (require 'neotree)
+(require 'godoctor)
 
 
 (ac-config-default)
