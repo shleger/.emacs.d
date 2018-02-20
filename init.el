@@ -1,6 +1,6 @@
 ;;https://stackoverflow.com/questions/10092322/how-to-automatically-install-emacs-packages-by-specifying-a-list-of-package-name
 ;; list the packages you want
-(setq package-list '( go-mode go-eldoc company company-go yasnippet go-rename multi-compile flycheck gotest go-scratch go-direx exec-path-from-shell go-guru godoctor auto-complete go-autocomplete neotree sbt-mode ensime))
+(setq package-list '( go-mode go-eldoc company company-go yasnippet go-rename multi-compile flycheck gotest go-scratch go-direx exec-path-from-shell go-guru godoctor auto-complete go-autocomplete neotree sbt-mode ensime anaconda-mode company-anaconda meghanada))
 
 ;; Added by Package.el.  This must come before configurations of
 ;; installed packages.  Don't delete this line.  If you don't want it,
@@ -127,9 +127,30 @@
 (require 'multi-compile)
 (require 'go-eldoc)
 (require 'company-go)
+(require 'company-anaconda)
 (require 'go-autocomplete)
 (require 'auto-complete-config)
 (require 'neotree)
+
+(require 'meghanada)
+(require 'company-meghanada)
+(require 'flycheck-meghanada)
+(add-hook 'java-mode-hook
+          (lambda ()
+            ;; meghanada-mode on
+            (meghanada-mode t)
+            (flycheck-mode +1)
+            (setq c-basic-offset 2)
+            ;; use code format
+            (add-hook 'before-save-hook 'meghanada-code-beautify-before-save)))
+(cond
+   ((eq system-type 'windows-nt)
+    (setq meghanada-java-path (expand-file-name "bin/java.exe" (getenv "JAVA_HOME")))
+    (setq meghanada-maven-path "mvn.cmd"))
+   (t
+    (setq meghanada-java-path "java")
+    (setq meghanada-maven-path "mvn")))
+
 
 ;install godoctor before
 ;go get github.com/godoctor/godoctor
@@ -149,6 +170,14 @@
 (defun auto-complete-for-go ()
   (auto-complete-mode 1))
 (add-hook 'go-mode-hook 'auto-complete-for-go)
+
+
+;;python
+(add-hook 'python-mode-hook 'anaconda-mode)
+(add-hook 'python-mode-hook 'anaconda-eldoc-mode)
+;;use IPython
+(setq python-shell-interpreter "ipython2")
+
 
 ;;build and test
 (defun my-go-mode-hook ()
@@ -187,4 +216,4 @@
     ))
 
 
-(add-to-list 'exec-path "/usr/local/bin")
+(add-to-list 'exec-path "/usr/local/bin:/opt/anaconda/anaconda2/bin")
