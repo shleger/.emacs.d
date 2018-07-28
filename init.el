@@ -101,7 +101,7 @@
  '(cua-mode t nil (cua-base))
  '(package-selected-packages
    (quote
-    (exec-path-from-shell list-packages-ext go-autocomplete auto-complete company-go))))
+    (json-mode exec-path-from-shell list-packages-ext go-autocomplete auto-complete company-go))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
