@@ -1,6 +1,6 @@
 ;;https://stackoverflow.com/questions/10092322/how-to-automatically-install-emacs-packages-by-specifying-a-list-of-package-name
 ;; list the packages you want
-(setq package-list '( go-mode go-eldoc company company-go yasnippet go-rename multi-compile flycheck gotest go-scratch go-direx exec-path-from-shell go-guru godoctor auto-complete go-autocomplete neotree sbt-mode ensime anaconda-mode company-anaconda meghanada))
+(setq package-list '( google-translate go-mode go-eldoc company company-go yasnippet go-rename multi-compile flycheck gotest go-scratch go-direx exec-path-from-shell go-guru godoctor auto-complete go-autocomplete neotree sbt-mode ensime anaconda-mode company-anaconda meghanada))
 
 ;; Added by Package.el.  This must come before configurations of
 ;; installed packages.  Don't delete this line.  If you don't want it,
@@ -101,7 +101,7 @@
  '(cua-mode t nil (cua-base))
  '(package-selected-packages
    (quote
-    (json-mode exec-path-from-shell list-packages-ext go-autocomplete auto-complete company-go))))
+    (google-translate json-mode exec-path-from-shell list-packages-ext go-autocomplete auto-complete company-go))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -135,6 +135,10 @@
 (require 'meghanada)
 (require 'company-meghanada)
 (require 'flycheck-meghanada)
+
+(require 'google-translate)
+(require 'google-translate-smooth-ui)
+
 (add-hook 'java-mode-hook
           (lambda ()
             ;; meghanada-mode on
@@ -164,6 +168,11 @@
 (setq neo-theme 'ascii)
 (setq neo-smart-open t)
 (global-set-key [f8] 'neotree-toggle)
+
+
+;;translate hot-key for google translate
+(global-set-key (kbd "M-t") 'google-translate-smooth-translate)
+(setq google-translate-translation-directions-alist '(("en" . "ru")))
 
 
 ;;autosave
