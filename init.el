@@ -11,7 +11,7 @@
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
 
 (package-initialize)
-
+(elpy-enable)
 
 
 ; fetch the list of packages available 
@@ -101,7 +101,7 @@
  '(cua-mode t nil (cua-base))
  '(package-selected-packages
    (quote
-    (google-translate json-mode exec-path-from-shell list-packages-ext go-autocomplete auto-complete company-go))))
+    (elpy google-translate json-mode exec-path-from-shell list-packages-ext go-autocomplete auto-complete company-go))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -174,7 +174,6 @@
 (global-set-key (kbd "M-t") 'google-translate-smooth-translate)
 (setq google-translate-translation-directions-alist '(("en" . "ru")))
 
-
 ;;autosave
 (defun auto-complete-for-go ()
   (auto-complete-mode 1))
@@ -185,7 +184,8 @@
 (add-hook 'python-mode-hook 'anaconda-mode)
 (add-hook 'python-mode-hook 'anaconda-eldoc-mode)
 ;;use IPython
-(setq python-shell-interpreter "ipython2")
+(setq python-shell-interpreter "ipython")
+;;(setq elpy-rpc-python-command "python3")
 
 
 ;;build and test
