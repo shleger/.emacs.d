@@ -99,6 +99,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(cua-mode t nil (cua-base))
+ '(mouse-wheel-tilt-scroll t)
  '(package-selected-packages
    (quote
     (elpy google-translate json-mode exec-path-from-shell list-packages-ext go-autocomplete auto-complete company-go))))
