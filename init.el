@@ -9,6 +9,8 @@
 
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+(add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/"))
+;;https://www.reddit.com/r/emacs/comments/apr9b2/bad_signature_from_gnu_elpa_signing_agent/
 
 (package-initialize)
 (elpy-enable)
@@ -98,11 +100,12 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(package-check-signature nil)
  '(cua-mode t nil (cua-base))
  '(mouse-wheel-tilt-scroll t)
  '(package-selected-packages
    (quote
-    (elpy google-translate json-mode exec-path-from-shell list-packages-ext go-autocomplete auto-complete company-go))))
+    (intero haskell-mode elpy google-translate json-mode exec-path-from-shell list-packages-ext go-autocomplete auto-complete company-go))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -118,9 +121,6 @@
  '(highlight ((t (:background "darkseagreen2" :foreground "cyan"))))
  '(neo-file-link-face ((t :inherit default))))
 
-
-;;(require 'package)
-;;(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
 
 (require 'company)
 (require 'flycheck)
@@ -139,6 +139,8 @@
 
 (require 'google-translate)
 (require 'google-translate-smooth-ui)
+
+(add-hook 'haskell-mode-hook 'intero-mode)
 
 (add-hook 'java-mode-hook
           (lambda ()
