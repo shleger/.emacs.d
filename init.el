@@ -167,6 +167,15 @@
 
 (ac-config-default)
 
+;;resently opned files https://www.emacswiki.org/emacs/RecentFiles
+(recentf-mode 1)
+(setq recentf-max-menu-items 25)
+(setq recentf-max-saved-items 25)
+(global-set-key "\C-x\ \C-r" 'recentf-open-files)
+
+;;audio bell off      https://www.emacswiki.org/emacs/AlarmBell
+(setq visible-bell 1) 
+
 ;;neoTree
 (setq neo-theme 'ascii)
 (setq neo-smart-open t)
