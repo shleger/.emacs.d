@@ -100,12 +100,12 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(package-check-signature nil)
  '(cua-mode t nil (cua-base))
  '(mouse-wheel-tilt-scroll t)
+ '(package-check-signature nil)
  '(package-selected-packages
    (quote
-    (intero haskell-mode elpy google-translate json-mode exec-path-from-shell list-packages-ext go-autocomplete auto-complete company-go))))
+    (vlf log4j-mode intero haskell-mode elpy google-translate json-mode exec-path-from-shell list-packages-ext go-autocomplete auto-complete company-go))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
