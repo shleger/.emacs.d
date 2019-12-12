@@ -7,6 +7,10 @@
 ;; just comment it out by adding a semicolon to the start of the line.
 ;; You may delete these explanatory comments.
 
+;; disable tutorial loading buffer
+(setq inhibit-startup-screen t)
+
+
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
 (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/"))
@@ -140,8 +144,8 @@
  '(diff-removed ((t (:inherit diff-changed :background "red"))))
  '(go-guru-hl-identified-face ((t (:background "SkyBlue"))))
  '(highlight ((t (:background "darkseagreen2" :foreground "cyan"))))
- '(neo-file-link-face ((t :inherit default))))
-
+ '(neo-file-link-face ((t :inherit default)))
+ '(region ((t (:background "goldenrod" :distant-foreground "gtk_selection_fg_color")))))
 
 (require 'company)
 (require 'flycheck)
