@@ -11,6 +11,8 @@
 ;; disable tutorial loading buffer
 (setq inhibit-startup-screen t)
 
+;;only enable zsh terminal in emacs shell
+(setenv "ESHELL" (expand-file-name "~/.emacs.d/bin/eshell"))
 
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "http://stable.melpa.org/packages/"))
