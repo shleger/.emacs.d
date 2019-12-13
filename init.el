@@ -1,6 +1,7 @@
 ;;https://stackoverflow.com/questions/10092322/how-to-automatically-install-emacs-packages-by-specifying-a-list-of-package-name
 ;; list the packages you want
-(setq package-list '( google-translate go-mode go-eldoc company company-go yasnippet go-rename multi-compile flycheck gotest go-scratch go-direx exec-path-from-shell go-guru godoctor auto-complete go-autocomplete neotree sbt-mode ensime anaconda-mode company-anaconda meghanada))
+(setq package-list '( google-translate go-mode go-eldoc company company-go yasnippet go-rename flycheck gotest go-scratch go-direx exec-path-from-shell go-guru godoctor   neotree sbt-mode ensime anaconda-mode company-anaconda meghanada))
+;;-no-in-stable-melpamelpa:  auto-complete go-autocomplete
 
 ;; Added by Package.el.  This must come before configurations of
 ;; installed packages.  Don't delete this line.  If you don't want it,
@@ -12,12 +13,12 @@
 
 
 (require 'package)
-(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+(add-to-list 'package-archives '("melpa" . "http://stable.melpa.org/packages/"))
 (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/"))
 ;;https://www.reddit.com/r/emacs/comments/apr9b2/bad_signature_from_gnu_elpa_signing_agent/
 
 (package-initialize)
-(elpy-enable)
+;;(elpy-enable) ;; - python mode enable 
 
 
 ; fetch the list of packages available 
@@ -54,13 +55,14 @@
  '(package-check-signature nil)
  '(package-selected-packages
    (quote
-    (elisp-format logview vlf intero haskell-mode elpy google-translate json-mode exec-path-from-shell list-packages-ext go-autocomplete auto-complete company-go)))
+    (elisp-format logview vlf intero haskell-mode elpy google-translate json-mode exec-path-from-shell list-packages-ext company-go go-autocomplete auto-complete)))
 
 )
 
 
 ; ask before open large files
-(require 'vlf-setup)
+(require 'vlf-setup) ;;--no-before-install-stable-melpa
+
 
 ;; Enable mouse support
 ;;
@@ -150,12 +152,12 @@
 (require 'company)
 (require 'flycheck)
 (require 'yasnippet)
-(require 'multi-compile)
+;;(require 'multi-compile) ;;;;--no in stable melpa:
 (require 'go-eldoc)
 (require 'company-go)
 (require 'company-anaconda)
-(require 'go-autocomplete)
-(require 'auto-complete-config)
+;;(require 'go-autocomplete) 
+(require 'auto-complete-config) 
 (require 'neotree)
 
 (require 'meghanada)
@@ -190,6 +192,7 @@
 (require 'godoctor)
 
 
+;;no-in-stable-melpa:
 (ac-config-default)
 
 ;;resently opned files https://www.emacswiki.org/emacs/RecentFiles
