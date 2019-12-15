@@ -34,11 +34,14 @@
 
 ;logview set time zone for logview
 ;(set-variable "datetime-timezone" "Europe/Moscow")
- (custom-set-variables                                           
- ;; custom-set-variables was added by Custom.                   
+ 
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.       
- ;; If there is more than one, they won't work right.           
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(cua-mode t nil (cua-base))
+ '(datetime-timezone "Europe/Moscow")
  '(logview-additional-submodes
    (quote
     (("apix"
@@ -51,15 +54,11 @@
     (("xxx"
       (regexp . "[0-9]{4}-[01][0-9]-[0-3][0-9][012][0-9]:[0-5][0-9]:[0-9]{8}")
       (aliases)))))
- '(datetime-timezone "Europe/Moscow")
- '(cua-mode t nil (cua-base))                                   
  '(mouse-wheel-tilt-scroll t)
  '(package-check-signature nil)
  '(package-selected-packages
    (quote
-    (elisp-format logview vlf intero haskell-mode elpy google-translate json-mode exec-path-from-shell list-packages-ext company-go go-autocomplete auto-complete)))
-
-)
+    (magit elisp-format logview vlf intero haskell-mode elpy google-translate json-mode exec-path-from-shell list-packages-ext company-go go-autocomplete auto-complete))))
 
 
 ; ask before open large files
@@ -170,6 +169,26 @@
 (require 'google-translate-smooth-ui)
 
 (add-hook 'haskell-mode-hook 'intero-mode)
+
+
+(defun intero-repl-run-main-on-save()
+ (when (eq major-mode 'haskell-mode)
+   (intero-repl-load-main)
+ )
+)
+;;run haskell app in intero-mode on after-save
+(defun intero-repl-load-main (&optional prompt-options)
+  (let ((file (intero-path-for-ghci (intero-buffer-file-name))))
+    (intero-with-repl-buffer prompt-options
+      (comint-simple-send
+         (get-buffer-process (current-buffer))
+         ":set prompt \"\\n\"")
+          (comint-simple-send (get-buffer-process (current-buffer)) ":reload")
+	  (comint-simple-send (get-buffer-process (current-buffer)) ":main")
+          (comint-simple-send (get-buffer-process (current-buffer)) ":set prompt \"\\4 \""))))
+
+(add-hook 'after-save-hook 'intero-repl-run-main-on-save)
+
 
 (add-hook 'java-mode-hook
           (lambda ()
