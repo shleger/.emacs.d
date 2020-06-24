@@ -15,13 +15,21 @@
 (setenv "ESHELL" (expand-file-name "~/.emacs.d/bin/eshell"))
 
 (require 'package)
-(add-to-list 'package-archives '("melpa" . "http://stable.melpa.org/packages/"))
-(add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/"))
+
+(setq package-archives
+      '(("GNU ELPA"     . "https://elpa.gnu.org/packages/")
+;;        ("MELPA Stable" . "https://stable.melpa.org/packages/")
+        ("MELPA"        . "https://melpa.org/packages/"))
+      package-archive-priorities
+      '(
+;;	("MELPA Stable" . 10)
+        ("GNU ELPA"     . 5)
+        ("MELPA"        . 50)))
+
+
 ;;https://www.reddit.com/r/emacs/comments/apr9b2/bad_signature_from_gnu_elpa_signing_agent/
 
 (package-initialize)
-;;(elpy-enable) ;; - python mode enable 
-
 
 ; fetch the list of packages available 
 (unless package-archive-contents
@@ -42,6 +50,8 @@
  ;; If there is more than one, they won't work right.
  '(cua-mode t nil (cua-base))
  '(datetime-timezone "Europe/Moscow")
+ '(display-battery-mode t)
+ '(display-time-mode t)
  '(logview-additional-submodes
    (quote
     (("apix"
@@ -58,7 +68,8 @@
  '(package-check-signature nil)
  '(package-selected-packages
    (quote
-    (magit elisp-format logview vlf intero haskell-mode elpy google-translate json-mode exec-path-from-shell list-packages-ext company-go go-autocomplete auto-complete))))
+    (virtualenvwrapper jedi flycheck yafolding vimish-fold magit elisp-format logview vlf intero haskell-mode elpy google-translate json-mode exec-path-from-shell list-packages-ext company-go go-autocomplete auto-complete)))
+ '(show-paren-mode t))
 
 
 ; ask before open large files
@@ -242,11 +253,22 @@
 
 
 ;;python
-(add-hook 'python-mode-hook 'anaconda-mode)
-(add-hook 'python-mode-hook 'anaconda-eldoc-mode)
+;;(add-hook 'python-mode-hook 'anaconda-mode)
+;;(add-hook 'python-mode-hook 'anaconda-eldoc-mode)
 ;;use IPython
-(setq python-shell-interpreter "ipython")
-;;(setq elpy-rpc-python-command "python3")
+;;(setq python-shell-interpreter "ipython")
+
+(elpy-enable) ;; - python mode enable 
+(setq elpy-rpc-python-command "python3")
+(add-hook 'python-mode-hook 'jedi:setup)
+(setq jedi:complete-on-dot t)                 ; optional
+(require 'virtualenvwrapper)
+(venv-initialize-interactive-shells) ;; if you want interactive shell support
+(venv-initialize-eshell) ;; if you want eshell support
+;; note that setting `venv-location` is not necessary if you
+;; use the default location (`~/.virtualenvs`), or if the
+;; the environment variable `WORKON_HOME` points to the right place
+
 
 
 ;;build and test
