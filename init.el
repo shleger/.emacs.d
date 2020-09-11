@@ -68,9 +68,11 @@
  '(package-check-signature nil)
  '(package-selected-packages
    (quote
-    (virtualenvwrapper jedi flycheck yafolding vimish-fold magit elisp-format logview vlf intero haskell-mode elpy google-translate json-mode exec-path-from-shell list-packages-ext company-go go-autocomplete auto-complete)))
+    (vyper-mode virtualenvwrapper jedi flycheck yafolding vimish-fold magit elisp-format logview vlf intero haskell-mode elpy google-translate json-mode exec-path-from-shell list-packages-ext company-go go-autocomplete auto-complete)))
  '(show-paren-mode t))
 
+(windmove-default-keybindings 'meta) ;; alt+ arrows moves coursor
+(save-place-mode 1) ;; save last opened position
 
 ; ask before open large files
 (require 'vlf-setup) ;;--no-before-install-stable-melpa
@@ -268,7 +270,9 @@
 ;; note that setting `venv-location` is not necessary if you
 ;; use the default location (`~/.virtualenvs`), or if the
 ;; the environment variable `WORKON_HOME` points to the right place
-
+(add-hook 'inferior-python-mode-hook
+          (lambda ()
+            (setq comint-move-point-for-output t)))
 
 
 ;;build and test
