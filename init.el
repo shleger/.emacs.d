@@ -1,6 +1,6 @@
 ;;https://stackoverflow.com/questions/10092322/how-to-automatically-install-emacs-packages-by-specifying-a-list-of-package-name
 ;; list the packages you want
-(setq package-list '( google-translate go-mode go-eldoc company company-go yasnippet go-rename flycheck gotest go-scratch go-direx exec-path-from-shell go-guru godoctor   neotree sbt-mode ensime anaconda-mode company-anaconda meghanada))
+(setq package-list '(lsp-haskell lv lsp-mode google-translate go-mode go-eldoc company company-go yasnippet go-rename flycheck gotest go-scratch go-direx exec-path-from-shell go-guru godoctor   neotree sbt-mode ensime anaconda-mode company-anaconda meghanada))
 ;;-no-in-stable-melpamelpa:  auto-complete go-autocomplete
 
 ;; Added by Package.el.  This must come before configurations of
@@ -53,22 +53,20 @@
  '(display-battery-mode t)
  '(display-time-mode t)
  '(logview-additional-submodes
-   (quote
-    (("apix"
+   '(("apix"
       (format . "LEVEL TIMESTAMP")
       (levels . "SLF4J")
       (timestamp)
-      (aliases)))))
+      (aliases))))
  '(logview-additional-timestamp-formats
-   (quote
-    (("xxx"
+   '(("xxx"
       (regexp . "[0-9]{4}-[01][0-9]-[0-3][0-9][012][0-9]:[0-5][0-9]:[0-9]{8}")
-      (aliases)))))
+      (aliases))))
+'(lsp-haskell-server-path  "/home/saa/.config/Code - OSS/User/globalStorage/haskell.haskell/haskell-language-server-0.7.0-linux-8.8.4")
  '(mouse-wheel-tilt-scroll t)
  '(package-check-signature nil)
  '(package-selected-packages
-   (quote
-    (vyper-mode virtualenvwrapper jedi flycheck yafolding vimish-fold magit elisp-format logview vlf intero haskell-mode elpy google-translate json-mode exec-path-from-shell list-packages-ext company-go go-autocomplete auto-complete)))
+   '(lsp-haskell lv lsp-mode vyper-mode virtualenvwrapper jedi flycheck yafolding vimish-fold magit elisp-format logview vlf intero haskell-mode elpy google-translate json-mode exec-path-from-shell list-packages-ext company-go go-autocomplete auto-complete))
  '(show-paren-mode t))
 
 (windmove-default-keybindings 'meta) ;; alt+ arrows moves coursor
@@ -181,26 +179,32 @@
 (require 'google-translate)
 (require 'google-translate-smooth-ui)
 
-(add-hook 'haskell-mode-hook 'intero-mode)
+;; (add-hook 'haskell-mode-hook 'intero-mode)
 
 
-(defun intero-repl-run-main-on-save()
- (when (eq major-mode 'haskell-mode)
-   (intero-repl-load-main)
- )
-)
-;;run haskell app in intero-mode on after-save
-(defun intero-repl-load-main (&optional prompt-options)
-  (let ((file (intero-path-for-ghci (intero-buffer-file-name))))
-    (intero-with-repl-buffer prompt-options
-      (comint-simple-send
-         (get-buffer-process (current-buffer))
-         ":set prompt \"\\n\"")
-          (comint-simple-send (get-buffer-process (current-buffer)) ":reload")
-	  (comint-simple-send (get-buffer-process (current-buffer)) ":main")
-          (comint-simple-send (get-buffer-process (current-buffer)) ":set prompt \"\\4 \""))))
+;; (defun intero-repl-run-main-on-save()
+;;  (when (eq major-mode 'haskell-mode)
+;;    (intero-repl-load-main)
+;;  )
+;; )
+;; ;;run haskell app in intero-mode on after-save
+;; (defun intero-repl-load-main (&optional prompt-options)
+;;   (let ((file (intero-path-for-ghci (intero-buffer-file-name))))
+;;     (intero-with-repl-buffer prompt-options
+;;       (comint-simple-send
+;;          (get-buffer-process (current-buffer))
+;;          ":set prompt \"\\n\"")
+;;           (comint-simple-send (get-buffer-process (current-buffer)) ":reload")
+;; 	  (comint-simple-send (get-buffer-process (current-buffer)) ":main")
+;;           (comint-simple-send (get-buffer-process (current-buffer)) ":set prompt \"\\4 \""))))
 
-(add-hook 'after-save-hook 'intero-repl-run-main-on-save)
+;; (add-hook 'after-save-hook 'intero-repl-run-main-on-save)
+
+(require 'lsp)
+(require 'lsp-haskell)
+;;Hooks so haskell and literate haskell major modes trigger LSP setup
+(add-hook 'haskell-mode-hook #'lsp)
+(add-hook 'haskell-literate-mode-hook #'lsp)
 
 
 (add-hook 'java-mode-hook
