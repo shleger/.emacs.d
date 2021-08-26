@@ -70,7 +70,7 @@
  '(mouse-wheel-tilt-scroll t)
  '(package-check-signature nil)
  '(package-selected-packages
-   '(lsp-ui helm-lsp lsp-treemacs ## lsp-haskell lv lsp-mode vyper-mode virtualenvwrapper jedi flycheck yafolding vimish-fold magit elisp-format logview vlf intero haskell-mode elpy google-translate json-mode exec-path-from-shell list-packages-ext company-go go-autocomplete auto-complete))
+   '(helm-lsp lsp-treemacs lv lsp-mode vyper-mode virtualenvwrapper jedi yafolding vimish-fold magit elisp-format logview vlf elpy google-translate json-mode exec-path-from-shell list-packages-ext))
  '(show-paren-mode t))
 
 (windmove-default-keybindings 'meta) ;; alt+ arrows moves coursor
