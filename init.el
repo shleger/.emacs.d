@@ -1,6 +1,6 @@
 ;;https://stackoverflow.com/questions/10092322/how-to-automatically-install-emacs-packages-by-specifying-a-list-of-package-name
 ;; list the packages you want
-(setq package-list '(lsp-haskell lv lsp-mode google-translate go-mode go-eldoc company company-go yasnippet go-rename flycheck gotest go-scratch go-direx exec-path-from-shell go-guru godoctor   neotree sbt-mode ensime anaconda-mode company-anaconda meghanada))
+(setq package-list '(lsp-haskell lv lsp-mode lsp-ui google-translate yasnippet flymake exec-path-from-shell neotree sbt-mode ensime anaconda-mode company-anaconda meghanada))
 ;;-no-in-stable-melpamelpa:  auto-complete go-autocomplete
 
 ;; Added by Package.el.  This must come before configurations of
@@ -52,6 +52,9 @@
  '(datetime-timezone "Europe/Moscow")
  '(display-battery-mode t)
  '(display-time-mode t)
+ '(haskell-process-auto-import-loaded-modules t)
+ '(haskell-process-log t)
+ '(haskell-process-suggest-remove-import-lines t)
  '(logview-additional-submodes
    '(("apix"
       (format . "LEVEL TIMESTAMP")
@@ -62,11 +65,12 @@
    '(("xxx"
       (regexp . "[0-9]{4}-[01][0-9]-[0-3][0-9][012][0-9]:[0-5][0-9]:[0-9]{8}")
       (aliases))))
-'(lsp-haskell-server-path  "/home/saa/.config/Code - OSS/User/globalStorage/haskell.haskell/haskell-language-server-0.7.0-linux-8.8.4")
+ '(lsp-haskell-server-path
+   "/home/saa/.config/Code - OSS/User/globalStorage/haskell.haskell/haskell-language-server-0.7.0-linux-8.8.4")
  '(mouse-wheel-tilt-scroll t)
  '(package-check-signature nil)
  '(package-selected-packages
-   '(lsp-haskell lv lsp-mode vyper-mode virtualenvwrapper jedi flycheck yafolding vimish-fold magit elisp-format logview vlf intero haskell-mode elpy google-translate json-mode exec-path-from-shell list-packages-ext company-go go-autocomplete auto-complete))
+   '(lsp-ui helm-lsp lsp-treemacs ## lsp-haskell lv lsp-mode vyper-mode virtualenvwrapper jedi flycheck yafolding vimish-fold magit elisp-format logview vlf intero haskell-mode elpy google-translate json-mode exec-path-from-shell list-packages-ext company-go go-autocomplete auto-complete))
  '(show-paren-mode t))
 
 (windmove-default-keybindings 'meta) ;; alt+ arrows moves coursor
@@ -206,6 +210,10 @@
 (add-hook 'haskell-mode-hook #'lsp)
 (add-hook 'haskell-literate-mode-hook #'lsp)
 
+(require 'haskell-interactive-mode)
+(require 'haskell-process)
+(add-hook 'haskell-mode-hook 'interactive-haskell-mode)
+
 
 (add-hook 'java-mode-hook
           (lambda ()
@@ -252,11 +260,16 @@
 (global-set-key (kbd "M-t") 'google-translate-smooth-translate)
 (setq google-translate-translation-directions-alist '(("en" . "ru")))
 
-;;autosave
-(defun auto-complete-for-go ()
-  (auto-complete-mode 1))
-(add-hook 'go-mode-hook 'auto-complete-for-go)
+;;lsp
+(require 'lsp-mode)
+(add-hook 'go-mode-hook #'lsp-deferred)
 
+;; Set up before-save hooks to format buffer and add/delete imports.
+;; Make sure you don't have other gofmt/goimports hooks enabled.
+(defun lsp-go-install-save-hooks ()
+  (add-hook 'before-save-hook #'lsp-format-buffer t t)
+  (add-hook 'before-save-hook #'lsp-organize-imports t t))
+(add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
 
 ;;python
 ;;(add-hook 'python-mode-hook 'anaconda-mode)
@@ -293,27 +306,5 @@
 
 ;; INSERT PAIR BRACKET
 (electric-pair-mode)
-
-;; HOOKS
-(add-hook 'go-mode-hook 'my-go-mode-hook)                  
-(add-hook 'go-mode-hook #'go-guru-hl-identifier-mode)    ; Very slow on Windows ((
-
-;; Call Gofmt before saving
-(add-hook 'before-save-hook 'gofmt-before-save)
-(setq-default gofmt-command "goimports")
-(add-hook 'go-mode-hook 'go-eldoc-setup)
-(add-hook 'go-mode-hook (lambda ()
-                            (set (make-local-variable 'company-backends) '(company-go))
-                            (company-mode)))
-(add-hook 'go-mode-hook 'yas-minor-mode)
-(add-hook 'go-mode-hook 'flycheck-mode)
-(setq multi-compile-alist '(
-    (go-mode . (
-("go-build" "go build -v"
-   (locate-dominating-file buffer-file-name ".git"))
-("go-build-and-run" "go build -v && echo 'build finish' && eval ./${PWD##*/}"
-   (multi-compile-locate-file-dir ".git"))))
-    ))
-
 
 (add-to-list 'exec-path "/usr/local/bin:/opt/anaconda/anaconda2/bin")
