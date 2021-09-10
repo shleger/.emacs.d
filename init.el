@@ -11,6 +11,21 @@
 ;; disable tutorial loading buffer
 (setq inhibit-startup-screen t)
 
+;disable toolbar and menu
+(tool-bar-mode -1)
+(menu-bar-mode -1)
+
+
+;Relaxing the rather conservative garbage collector can also speed up startup times:
+;; Minimize garbage collection during startup
+(setq gc-cons-threshold most-positive-fixnum)
+
+;; Lower threshold back to 8 MiB (default is 800kB)
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            (setq gc-cons-threshold (expt 2 23))))
+
+
 ;;only enable zsh terminal in emacs shell
 (setenv "ESHELL" (expand-file-name "~/.emacs.d/bin/eshell"))
 
@@ -70,7 +85,7 @@
  '(mouse-wheel-tilt-scroll t)
  '(package-check-signature nil)
  '(package-selected-packages
-   '(helm-lsp lsp-treemacs lv lsp-mode vyper-mode virtualenvwrapper jedi yafolding vimish-fold magit elisp-format logview vlf elpy google-translate json-mode exec-path-from-shell list-packages-ext))
+   '(ranger helm-lsp lsp-treemacs lv lsp-mode vyper-mode virtualenvwrapper jedi yafolding vimish-fold magit elisp-format logview vlf elpy google-translate json-mode exec-path-from-shell list-packages-ext))
  '(show-paren-mode t))
 
 (windmove-default-keybindings 'meta) ;; alt+ arrows moves coursor
@@ -161,7 +176,7 @@
  '(diff-hunk-header ((t (:inherit diff-header :background "color-241"))))
  '(diff-removed ((t (:inherit diff-changed :background "red"))))
  '(go-guru-hl-identified-face ((t (:background "SkyBlue"))))
- '(highlight ((t (:background "darkseagreen2" :foreground "cyan"))))
+ '(highlight ((t (:background "gold" :foreground "black"))))
  '(neo-file-link-face ((t :inherit default)))
  '(region ((t (:background "goldenrod" :distant-foreground "gtk_selection_fg_color")))))
 
@@ -237,6 +252,8 @@
 ;go install github.com/godoctor/godoctor
 (require 'godoctor)
 
+;start ranger - file manager
+(global-set-key [C-escape] 'ranger)
 
 ;;no-in-stable-melpa:
 (ac-config-default)
