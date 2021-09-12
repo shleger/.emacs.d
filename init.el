@@ -11,9 +11,18 @@
 ;; disable tutorial loading buffer
 (setq inhibit-startup-screen t)
 
-;disable toolbar and menu
+;disable toolbar and menu and scrollabar
 (tool-bar-mode -1)
 (menu-bar-mode -1)
+(scroll-bar-mode -1)
+
+;;https://www.emacswiki.org/emacs/SmoothScrolling
+(good-scroll-mode 1)
+;; Hide right scroll bar
+(set-face-foreground 'vertical-border (face-background 'default)) 
+(set-face-background 'fringe (face-background 'default)) 
+(set-face-foreground 'fringe (face-background 'default))
+
 
 
 ;Relaxing the rather conservative garbage collector can also speed up startup times:
@@ -85,7 +94,7 @@
  '(mouse-wheel-tilt-scroll t)
  '(package-check-signature nil)
  '(package-selected-packages
-   '(ranger helm-lsp lsp-treemacs lv lsp-mode vyper-mode virtualenvwrapper jedi yafolding vimish-fold magit elisp-format logview vlf elpy google-translate json-mode exec-path-from-shell list-packages-ext))
+   '(good-scroll  minimap ranger helm-lsp lsp-treemacs lv lsp-mode vyper-mode virtualenvwrapper jedi yafolding vimish-fold magit elisp-format logview vlf elpy google-translate json-mode exec-path-from-shell list-packages-ext))
  '(show-paren-mode t))
 
 (windmove-default-keybindings 'meta) ;; alt+ arrows moves coursor
@@ -219,6 +228,12 @@
 
 ;; (add-hook 'after-save-hook 'intero-repl-run-main-on-save)
 
+;; minimap on the right
+(require 'minimap)
+(setq minimap-window-location 'right)
+(minimap-mode 1)
+
+
 (require 'lsp)
 (require 'lsp-haskell)
 ;;Hooks so haskell and literate haskell major modes trigger LSP setup
@@ -247,13 +262,19 @@
     (setq meghanada-maven-path "mvn")))
 
 
-;install godoctor before
-;go get github.com/godoctor/godoctor
-;go install github.com/godoctor/godoctor
-(require 'godoctor)
+;;install godoctor before
+;;go get github.com/godoctor/godoctor
+;;go install github.com/godoctor/godoctor
+;;(require 'godoctor)
 
-;start ranger - file manager
+;;start ranger - file manager
 (global-set-key [C-escape] 'ranger)
+
+;;scroll by line
+(global-set-key (quote [C-S-up]) (quote scroll-down-line))
+(global-set-key (quote [C-S-down]) (quote scroll-up-line))
+(global-set-key [next] #'good-scroll-up-full-screen)
+(global-set-key [prior] #'good-scroll-down-full-screen)
 
 ;;no-in-stable-melpa:
 (ac-config-default)
