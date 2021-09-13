@@ -22,7 +22,8 @@
 (set-face-foreground 'vertical-border (face-background 'default)) 
 (set-face-background 'fringe (face-background 'default)) 
 (set-face-foreground 'fringe (face-background 'default))
-
+;;automatically enable that mode in all programming modes
+(add-hook 'prog-mode-hook 'display-line-numbers-mode)
 
 
 ;Relaxing the rather conservative garbage collector can also speed up startup times:
@@ -94,7 +95,7 @@
  '(mouse-wheel-tilt-scroll t)
  '(package-check-signature nil)
  '(package-selected-packages
-   '(good-scroll  minimap ranger helm-lsp lsp-treemacs lv lsp-mode vyper-mode virtualenvwrapper jedi yafolding vimish-fold magit elisp-format logview vlf elpy google-translate json-mode exec-path-from-shell list-packages-ext))
+   '(graphql-mode yaml-mode all-the-icons good-scroll minimap ranger helm-lsp lsp-treemacs lv lsp-mode vyper-mode virtualenvwrapper jedi yafolding vimish-fold magit elisp-format logview vlf elpy google-translate json-mode exec-path-from-shell list-packages-ext))
  '(show-paren-mode t))
 
 (windmove-default-keybindings 'meta) ;; alt+ arrows moves coursor
@@ -104,21 +105,22 @@
 (require 'vlf-setup) ;;--no-before-install-stable-melpa
 
 
+;;REMOVE replaced by good scroll 
 ;; Enable mouse support
 ;;
-(unless window-system
-  (require 'mouse)
-  (xterm-mouse-mode t)
-  (global-set-key [mouse-4] (lambda ()
-                              (interactive)
-                              (scroll-down 1)))
-  (global-set-key [mouse-5] (lambda ()
-                              (interactive)
-                              (scroll-up 1)))
-  (defun track-mouse (e))
-  (setq mouse-sel-mode t)
-)
-(global-set-key (kbd "M-o")  'mode-line-other-buffer)
+;; (unless window-system
+;;   (require 'mouse)
+;;   (xterm-mouse-mode t)
+;;   (global-set-key [mouse-4] (lambda ()
+;;                               (interactive)
+;;                               (scroll-down 1)))
+;;   (global-set-key [mouse-5] (lambda ()
+;;                               (interactive)
+;;                               (scroll-up 1)))
+;;   (defun track-mouse (e))
+;;   (setq mouse-sel-mode t)
+;; )
+
 
 ;;transpose-frames - https://www.emacswiki.org/emacs/ToggleWindowSplit
 (defun toggle-window-split ()
@@ -156,6 +158,7 @@
     (if (not (file-exists-p dirname))                                           
         (make-directory dirname t))                                             
     (concat dirname (file-name-nondirectory FILE))))
+
 
 
 
@@ -245,27 +248,31 @@
 (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
 
 
-(add-hook 'java-mode-hook
-          (lambda ()
-            ;; meghanada-mode on
-            (meghanada-mode t)
-            (flycheck-mode +1)
-            (setq c-basic-offset 2)
-            ;; use code format
-            (add-hook 'before-save-hook 'meghanada-code-beautify-before-save)))
-(cond
-   ((eq system-type 'windows-nt)
-    (setq meghanada-java-path (expand-file-name "bin/java.exe" (getenv "JAVA_HOME")))
-    (setq meghanada-maven-path "mvn.cmd"))
-   (t
-    (setq meghanada-java-path "java")
-    (setq meghanada-maven-path "mvn")))
+;; (add-hook 'java-mode-hook
+;;           (lambda ()
+;;             ;; meghanada-mode on
+;;             (meghanada-mode t)
+;;             (flycheck-mode +1)
+;;             (setq c-basic-offset 2)
+;;             ;; use code format
+;;             (add-hook 'before-save-hook 'meghanada-code-beautify-before-save)))
+;; (cond
+;;    ((eq system-type 'windows-nt)
+;;     (setq meghanada-java-path (expand-file-name "bin/java.exe" (getenv "JAVA_HOME")))
+;;     (setq meghanada-maven-path "mvn.cmd"))
+;;    (t
+;;     (setq meghanada-java-path "java")
+;;     (setq meghanada-maven-path "mvn")))
 
 
 ;;install godoctor before
 ;;go get github.com/godoctor/godoctor
 ;;go install github.com/godoctor/godoctor
 ;;(require 'godoctor)
+
+;;return to previos buffer
+(global-set-key (kbd "M-o")  'mode-line-other-buffer)
+
 
 ;;start ranger - file manager
 (global-set-key [C-escape] 'ranger)
@@ -289,19 +296,23 @@
 (setq visible-bell 1) 
 
 ;;neoTree
-(setq neo-theme 'ascii)
+;;(setq neo-theme 'ascii)
+(setq neo-theme (if (display-graphic-p) 'icons 'arrow))
 (setq neo-smart-open t)
 (global-set-key [f8] 'neotree-toggle)
+;;https://github.com/domtronn/all-the-icons.el
+;;+https://github.com/jaypei/emacs-neotree
+;;(require 'all-the-icons)
+
 
 
 ;;translate hot-key for google translate
 (global-set-key (kbd "M-t") 'google-translate-smooth-translate)
 (setq google-translate-translation-directions-alist '(("en" . "ru")))
 
-;;lsp
+;;golang
 (require 'lsp-mode)
 (add-hook 'go-mode-hook #'lsp-deferred)
-
 ;; Set up before-save hooks to format buffer and add/delete imports.
 ;; Make sure you don't have other gofmt/goimports hooks enabled.
 (defun lsp-go-install-save-hooks ()
