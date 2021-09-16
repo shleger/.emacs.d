@@ -97,7 +97,7 @@
  '(mouse-wheel-tilt-scroll t)
  '(package-check-signature nil)
  '(package-selected-packages
-   '(treemacs-persp treemacs-magit treemacs-icons-dired treemacs-projectile treemacs-evil use-package all-the-icons-dired doom-themes web-mode tide graphql-mode yaml-mode all-the-icons good-scroll minimap ranger helm-lsp lsp-treemacs lv lsp-mode vyper-mode virtualenvwrapper jedi yafolding vimish-fold magit elisp-format logview vlf elpy google-translate json-mode exec-path-from-shell list-packages-ext))
+   '(selectrum diff-hl treemacs-persp treemacs-magit treemacs-icons-dired treemacs-projectile treemacs-evil use-package all-the-icons-dired doom-themes web-mode tide graphql-mode yaml-mode all-the-icons good-scroll minimap ranger helm-lsp lsp-treemacs lv lsp-mode vyper-mode virtualenvwrapper jedi yafolding vimish-fold magit elisp-format logview vlf elpy google-translate json-mode exec-path-from-shell list-packages-ext))
  '(show-paren-mode t))
 
 (windmove-default-keybindings 'meta) ;; alt+ arrows moves coursor
@@ -170,21 +170,18 @@
     (concat dirname (file-name-nondirectory FILE))))
 
 
-
-
-
-;;for-git
-(add-to-list 'load-path "~/.emacs.d/diff-hl/")
-(load "diff-hl.el")
-(load "diff-hl-amend.el")
-(load "diff-hl-dired.el")
-(load "diff-hl-flydiff.el")
-(load "diff-hl-margin.el")
+;;findout wich face under coursor
+;; (defun what-face (pos)
+;;     (interactive "d")
+;;         (let ((face (or (get-char-property (point) 'read-face-name)
+;;             (get-char-property (point) 'face))))
+;;     (if face (message "Face: %s" face) (message "No face at %d" pos))))
 
 (global-diff-hl-mode)
 (diff-hl-flydiff-mode)
 (diff-hl-margin-mode)
 
+(global-diff-hl-show-hunk-mouse-mode)
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -329,6 +326,7 @@
   (setq flycheck-check-syntax-automatically '(save mode-enabled))
   (eldoc-mode +1)
   (tide-hl-identifier-mode +1)
+  (setq create-lockfiles nil) ;; https://stackoverflow.com/questions/62567370/reactjs-local-server-crashes-after-editing-file-in-emacs-even-without-saving
   ;; company is an optional dependency. You have to
   ;; install it separately via package-install
   ;; `M-x package-install [ret] company`
@@ -419,6 +417,8 @@
 
 (add-to-list 'exec-path "/usr/local/bin:/opt/anaconda/anaconda2/bin")
 
+;; https://github.com/raxod502/selectrum#what-is-it
+(selectrum-mode +1)
 
 (use-package treemacs
   :ensure t
