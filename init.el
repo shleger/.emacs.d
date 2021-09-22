@@ -97,7 +97,7 @@
  '(mouse-wheel-tilt-scroll t)
  '(package-check-signature nil)
  '(package-selected-packages
-   '(selectrum diff-hl treemacs-persp treemacs-magit treemacs-icons-dired treemacs-projectile treemacs-evil use-package all-the-icons-dired doom-themes web-mode tide graphql-mode yaml-mode all-the-icons good-scroll minimap ranger helm-lsp lsp-treemacs lv lsp-mode vyper-mode virtualenvwrapper jedi yafolding vimish-fold magit elisp-format logview vlf elpy google-translate json-mode exec-path-from-shell list-packages-ext))
+   '(diff-hl treemacs-persp treemacs-magit treemacs-icons-dired treemacs-projectile treemacs-evil use-package all-the-icons-dired doom-themes web-mode tide graphql-mode yaml-mode all-the-icons good-scroll minimap ranger helm-lsp lsp-treemacs lv lsp-mode vyper-mode virtualenvwrapper jedi yafolding vimish-fold magit elisp-format logview vlf elpy google-translate json-mode exec-path-from-shell list-packages-ext))
  '(show-paren-mode t))
 
 (windmove-default-keybindings 'meta) ;; alt+ arrows moves coursor
@@ -193,7 +193,12 @@
  '(diff-function ((t (:inherit diff-header :background "color-241"))))
  '(diff-header ((t (:background "color-17"))))
  '(diff-hunk-header ((t (:inherit diff-header :background "color-241"))))
- '(diff-removed ((t (:inherit diff-changed :background "red"))))
+ '(diff-removed ((t (:inherit diff-changed :extend t :background "#f4978e" :foreground "black"))))
+
+ ;;'(diff-removed ((t (:background "red" :foreground "black"))))
+ ;;'(diff-changed ((t (:background "green" :foreground "black"))))
+ 
+ 
  '(go-guru-hl-identified-face ((t (:background "SkyBlue"))))
  '(highlight ((t (:background "gold" :foreground "black"))))
  '(neo-file-link-face ((t :inherit default)))
@@ -417,8 +422,6 @@
 
 (add-to-list 'exec-path "/usr/local/bin:/opt/anaconda/anaconda2/bin")
 
-;; https://github.com/raxod502/selectrum#what-is-it
-(selectrum-mode +1)
 
 (use-package treemacs
   :ensure t
