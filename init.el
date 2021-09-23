@@ -95,9 +95,10 @@
  '(lsp-haskell-server-path
    "/home/saa/.config/Code - OSS/User/globalStorage/haskell.haskell/haskell-language-server-0.7.0-linux-8.8.4")
  '(mouse-wheel-tilt-scroll t)
+ '(org-agenda-files '("~/my/org/todo.org"))
  '(package-check-signature nil)
  '(package-selected-packages
-   '(diff-hl treemacs-persp treemacs-magit treemacs-icons-dired treemacs-projectile treemacs-evil use-package all-the-icons-dired doom-themes web-mode tide graphql-mode yaml-mode all-the-icons good-scroll minimap ranger helm-lsp lsp-treemacs lv lsp-mode vyper-mode virtualenvwrapper jedi yafolding vimish-fold magit elisp-format logview vlf elpy google-translate json-mode exec-path-from-shell list-packages-ext))
+   '(alert org-alert lsp-java diff-hl treemacs-persp treemacs-magit treemacs-icons-dired treemacs-projectile treemacs-evil use-package all-the-icons-dired doom-themes web-mode tide graphql-mode yaml-mode all-the-icons good-scroll minimap ranger helm-lsp lsp-treemacs lv lsp-mode vyper-mode virtualenvwrapper jedi yafolding vimish-fold magit elisp-format logview vlf elpy google-translate json-mode exec-path-from-shell list-packages-ext))
  '(show-paren-mode t))
 
 (windmove-default-keybindings 'meta) ;; alt+ arrows moves coursor
@@ -114,22 +115,18 @@
 (doom-themes-neotree-config)
 
 
+;;java  lang server (auto install eclipse EDT)
+(require 'lsp-java)
+(add-hook 'java-mode-hook #'lsp)
 
-;;REMOVE replaced by good scroll 
-;; Enable mouse support
-;;
-;; (unless window-system
-;;   (require 'mouse)
-;;   (xterm-mouse-mode t)
-;;   (global-set-key [mouse-4] (lambda ()
-;;                               (interactive)
-;;                               (scroll-down 1)))
-;;   (global-set-key [mouse-5] (lambda ()
-;;                               (interactive)
-;;                               (scroll-up 1)))
-;;   (defun track-mouse (e))
-;;   (setq mouse-sel-mode t)
-;; )
+
+(use-package org-alert
+  :ensure t)
+(setq alert-default-style 'libnotify)
+;; alert example with package alert
+;;(defvar org-alett-test-title "title-head")
+;;(alert  "ddddd"  :severity 'high :title org-alett-test-title :category 'debug)
+
 
 
 ;;transpose-frames - https://www.emacswiki.org/emacs/ToggleWindowSplit
@@ -194,11 +191,6 @@
  '(diff-header ((t (:background "color-17"))))
  '(diff-hunk-header ((t (:inherit diff-header :background "color-241"))))
  '(diff-removed ((t (:inherit diff-changed :extend t :background "#f4978e" :foreground "black"))))
-
- ;;'(diff-removed ((t (:background "red" :foreground "black"))))
- ;;'(diff-changed ((t (:background "green" :foreground "black"))))
- 
- 
  '(go-guru-hl-identified-face ((t (:background "SkyBlue"))))
  '(highlight ((t (:background "gold" :foreground "black"))))
  '(neo-file-link-face ((t :inherit default)))
@@ -215,10 +207,6 @@
 (require 'auto-complete-config) 
 (require 'neotree)
 
-;;REMOVE java
-;; (require 'meghanada)
-;; (require 'company-meghanada)
-;; (require 'flycheck-meghanada)
 
 (require 'google-translate)
 (require 'google-translate-smooth-ui)
@@ -248,7 +236,7 @@
 (require 'minimap)
 (setq minimap-window-location 'right)
 (minimap-mode 1)
-
+;; FIXME Invalid face attribute :foreground nil
 
 (require 'lsp)
 (require 'lsp-haskell)
@@ -259,29 +247,6 @@
 (require 'haskell-interactive-mode)
 (require 'haskell-process)
 (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
-
-
-;; (add-hook 'java-mode-hook
-;;           (lambda ()
-;;             ;; meghanada-mode on
-;;             (meghanada-mode t)
-;;             (flycheck-mode +1)
-;;             (setq c-basic-offset 2)
-;;             ;; use code format
-;;             (add-hook 'before-save-hook 'meghanada-code-beautify-before-save)))
-;; (cond
-;;    ((eq system-type 'windows-nt)
-;;     (setq meghanada-java-path (expand-file-name "bin/java.exe" (getenv "JAVA_HOME")))
-;;     (setq meghanada-maven-path "mvn.cmd"))
-;;    (t
-;;     (setq meghanada-java-path "java")
-;;     (setq meghanada-maven-path "mvn")))
-
-
-;;install godoctor before
-;;go get github.com/godoctor/godoctor
-;;go install github.com/godoctor/godoctor
-;;(require 'godoctor)
 
 ;;return to previos buffer
 (global-set-key (kbd "M-o")  'mode-line-other-buffer)
@@ -527,3 +492,7 @@
 
 (with-eval-after-load 'treemacs
   (define-key treemacs-mode-map [mouse-1] #'treemacs-single-click-expand-action))
+
+(use-package lsp-treemacs)
+(lsp-treemacs-sync-mode 1)
+
