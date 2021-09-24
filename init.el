@@ -98,7 +98,7 @@
  '(org-agenda-files '("~/my/org/todo.org"))
  '(package-check-signature nil)
  '(package-selected-packages
-   '(alert org-alert lsp-java diff-hl treemacs-persp treemacs-magit treemacs-icons-dired treemacs-projectile treemacs-evil use-package all-the-icons-dired doom-themes web-mode tide graphql-mode yaml-mode all-the-icons good-scroll minimap ranger helm-lsp lsp-treemacs lv lsp-mode vyper-mode virtualenvwrapper jedi yafolding vimish-fold magit elisp-format logview vlf elpy google-translate json-mode exec-path-from-shell list-packages-ext))
+   '(selectrum-prescient selectrum alert org-alert lsp-java diff-hl treemacs-persp treemacs-magit treemacs-icons-dired treemacs-projectile treemacs-evil use-package all-the-icons-dired doom-themes web-mode tide graphql-mode yaml-mode all-the-icons good-scroll minimap ranger helm-lsp lsp-treemacs lv lsp-mode vyper-mode virtualenvwrapper jedi yafolding vimish-fold magit elisp-format logview vlf elpy google-translate json-mode exec-path-from-shell list-packages-ext))
  '(show-paren-mode t))
 
 (windmove-default-keybindings 'meta) ;; alt+ arrows moves coursor
@@ -107,8 +107,26 @@
 ; ask before open large files
 (require 'vlf-setup) ;;--no-before-install-stable-melpa
 
-;;(load-theme 'doom-zenburn t)
-(load-theme 'doom-tomorrow-day)
+
+;;Selectrum aims to provide a better completion UI using standard Emacs APIs. In essence it is an interface for selecting items from a list.
+;; https://github.com/raxod502/selectrum#alternative-1-prescient
+(selectrum-mode +1)
+;; to make sorting and filtering more intelligent
+
+;;CPU consumingc !!! 
+(selectrum-prescient-mode +1)
+;; to save your command history on disk, so the sorting gets more
+;; intelligent over time
+(prescient-persist-mode +1)
+
+
+
+;;day | night theme
+(if (> 19 (nth 2 (decode-time)))
+    "(string-to-number (format-time-string \"%H\" (current-time)))) --with string variant"
+    (load-theme 'doom-tomorrow-day)
+  (load-theme 'doom-zenburn t))
+
 ;; Enable flashing mode-line on errors
 (doom-themes-visual-bell-config)
 ;; Enable custom neotree theme (all-the-icons must be installed!)
@@ -123,9 +141,7 @@
 (use-package org-alert
   :ensure t)
 (setq alert-default-style 'libnotify)
-;; alert example with package alert
-;;(defvar org-alett-test-title "title-head")
-;;(alert  "ddddd"  :severity 'high :title org-alett-test-title :category 'debug)
+(org-alert-enable) ;;run timer for check schedulers and deadlines
 
 
 
