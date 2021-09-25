@@ -98,7 +98,7 @@
  '(org-agenda-files '("~/my/org/todo.org"))
  '(package-check-signature nil)
  '(package-selected-packages
-   '(selectrum-prescient selectrum alert org-alert lsp-java diff-hl treemacs-persp treemacs-magit treemacs-icons-dired treemacs-projectile treemacs-evil use-package all-the-icons-dired doom-themes web-mode tide graphql-mode yaml-mode all-the-icons good-scroll minimap ranger helm-lsp lsp-treemacs lv lsp-mode vyper-mode virtualenvwrapper jedi yafolding vimish-fold magit elisp-format logview vlf elpy google-translate json-mode exec-path-from-shell list-packages-ext))
+   '(org-download selectrum-prescient selectrum alert org-alert lsp-java diff-hl treemacs-persp treemacs-magit treemacs-icons-dired treemacs-projectile treemacs-evil use-package all-the-icons-dired doom-themes web-mode tide graphql-mode yaml-mode all-the-icons good-scroll minimap ranger helm-lsp lsp-treemacs lv lsp-mode vyper-mode virtualenvwrapper jedi yafolding vimish-fold magit elisp-format logview vlf elpy google-translate json-mode exec-path-from-shell list-packages-ext))
  '(show-paren-mode t))
 
 (windmove-default-keybindings 'meta) ;; alt+ arrows moves coursor
@@ -120,12 +120,18 @@
 (prescient-persist-mode +1)
 
 
+(defun load-dark-theme ()
+  "Dark theme for night"
+  (load-theme 'doom-zenburn t)
+  )
 
 ;;day | night theme
-(if (> 19 (nth 2 (decode-time)))
-    "(string-to-number (format-time-string \"%H\" (current-time)))) --with string variant"
-    (load-theme 'doom-tomorrow-day)
-  (load-theme 'doom-zenburn t))
+;;"(string-to-number (format-time-string "%H" (current-time)))) --with string variant"
+;; (if (> 0 1) '"else?") =>  return nil
+;;Test: (cond ((< 19 7 ) "b")   ((> 6 7 ) "b")   (t "w"))
+(cond ((< 19  (nth 2 (decode-time))) (load-dark-theme)) 
+      ((> 6   (nth 2 (decode-time))) (load-dark-theme))       
+      (t (load-theme 'doom-tomorrow-day))) 
 
 ;; Enable flashing mode-line on errors
 (doom-themes-visual-bell-config)
@@ -138,10 +144,14 @@
 (add-hook 'java-mode-hook #'lsp)
 
 
+;;org-mode additions
 (use-package org-alert
   :ensure t)
 (setq alert-default-style 'libnotify)
 (org-alert-enable) ;;run timer for check schedulers and deadlines
+
+;;insert screenshots (with xclip )
+(require 'org-download)
 
 
 
