@@ -98,11 +98,16 @@
  '(org-agenda-files '("~/my/org/todo.org"))
  '(package-check-signature nil)
  '(package-selected-packages
-   '(org-download selectrum-prescient selectrum alert org-alert lsp-java diff-hl treemacs-persp treemacs-magit treemacs-icons-dired treemacs-projectile treemacs-evil use-package all-the-icons-dired doom-themes web-mode tide graphql-mode yaml-mode all-the-icons good-scroll minimap ranger helm-lsp lsp-treemacs lv lsp-mode vyper-mode virtualenvwrapper jedi yafolding vimish-fold magit elisp-format logview vlf elpy google-translate json-mode exec-path-from-shell list-packages-ext))
+   '(plantuml-mode org-download selectrum-prescient selectrum alert org-alert lsp-java diff-hl treemacs-persp treemacs-magit treemacs-icons-dired treemacs-projectile treemacs-evil use-package all-the-icons-dired doom-themes web-mode tide graphql-mode yaml-mode all-the-icons good-scroll minimap ranger helm-lsp lsp-treemacs lv lsp-mode vyper-mode virtualenvwrapper jedi yafolding vimish-fold magit elisp-format logview vlf elpy google-translate json-mode exec-path-from-shell list-packages-ext))
  '(show-paren-mode t))
 
 (windmove-default-keybindings 'meta) ;; alt+ arrows moves coursor
 (save-place-mode 1) ;; save last opened position
+
+
+;;plantuml-mode (binary installed -> /usr/bin/plantuml from arch community repo)
+(setq plantuml-executable-path "/usr/bin/plantuml")
+(setq plantuml-default-exec-mode 'executable)
 
 ; ask before open large files
 (require 'vlf-setup) ;;--no-before-install-stable-melpa
@@ -152,7 +157,8 @@
 
 ;;insert screenshots (with xclip )
 (require 'org-download)
-
+(global-set-key "\C-ca" 'org-agenda)
+(setq org-agenda-skip-function-global '(org-agenda-skip-entry-if 'todo 'done))
 
 
 ;;transpose-frames - https://www.emacswiki.org/emacs/ToggleWindowSplit
