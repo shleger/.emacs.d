@@ -231,6 +231,10 @@
 (require 'company)
 (require 'flycheck)
 (require 'yasnippet)
+;;https://github.com/joaotavora/yasnippet -- enable minor mode
+(yas-reload-all)
+(add-hook 'prog-mode-hook #'yas-minor-mode)
+
 ;;(require 'multi-compile) ;;;;--no in stable melpa:
 (require 'go-eldoc)
 (require 'company-go)
