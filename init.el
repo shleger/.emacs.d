@@ -276,19 +276,23 @@
  '(neo-file-link-face ((t :inherit default)))
  '(region ((t (:background "goldenrod" :distant-foreground "gtk_selection_fg_color")))))
 
-(require 'company)
-(require 'flycheck)
-(require 'yasnippet)
+(use-package flycheck :ensure)
+;;=====TODO rm, used in use-package at the and of this file
+;;(require 'company)
+;;(require 'flycheck)
+;;(require 'yasnippet)
 ;;https://github.com/joaotavora/yasnippet -- enable minor mode
-(yas-reload-all)
-(add-hook 'prog-mode-hook #'yas-minor-mode)
-
+;;(yas-reload-all)
+;;(add-hook 'prog-mode-hook #'yas-minor-mode)
 ;;(require 'multi-compile) ;;;;--no in stable melpa:
+;;=====TODO rm until
+
+
 (require 'go-eldoc)
 (require 'company-go)
 (require 'company-anaconda)
-;;(require 'go-autocomplete) 
-(require 'auto-complete-config) 
+;;(require 'go-autocomplete)  TODO del
+;;(require 'auto-complete-config) TODO del
 (require 'neotree)
 
 
