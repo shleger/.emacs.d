@@ -1,7 +1,8 @@
 ;;https://stackoverflow.com/questions/10092322/how-to-automatically-install-emacs-packages-by-specifying-a-list-of-package-name
 ;; list the packages you want
 (setq package-list '(lsp-haskell lv lsp-mode lsp-ui google-translate yasnippet flymake exec-path-from-shell neotree sbt-mode ensime anaconda-mode company-anaconda meghanada))
-;;-no-in-stable-melpamelpa:  auto-complete go-autocomplete
+
+;;-no-in-stable-melpamelpa:  auto-complete go-autocomplete TODO del
 
 ;; Added by Package.el.  This must come before configurations of
 ;; installed packages.  Don't delete this line.  If you don't want it,
@@ -98,7 +99,7 @@
  '(org-agenda-files '("~/my/org/todo.org"))
  '(package-check-signature nil)
  '(package-selected-packages
-   '(plantuml-mode org-download selectrum-prescient selectrum alert org-alert lsp-java diff-hl treemacs-persp treemacs-magit treemacs-icons-dired treemacs-projectile projectile treemacs-evil use-package all-the-icons-dired doom-themes web-mode tide graphql-mode yaml-mode all-the-icons good-scroll minimap ranger helm-lsp lsp-treemacs lv lsp-mode vyper-mode virtualenvwrapper jedi yafolding vimish-fold magit elisp-format logview vlf elpy google-translate json-mode exec-path-from-shell list-packages-ext))
+   '(jenkinsfile-mode rustic plantuml-mode org-download selectrum-prescient selectrum alert org-alert lsp-java diff-hl treemacs-persp treemacs-magit treemacs-icons-dired treemacs-projectile projectile treemacs-evil use-package all-the-icons-dired doom-themes web-mode tide graphql-mode yaml-mode all-the-icons good-scroll minimap ranger helm-lsp lsp-treemacs lv lsp-mode vyper-mode virtualenvwrapper jedi yafolding vimish-fold magit elisp-format logview vlf elpy google-translate json-mode exec-path-from-shell list-packages-ext))
  '(show-paren-mode t))
 
 (windmove-default-keybindings 'meta) ;; alt+ arrows moves coursor
@@ -195,6 +196,7 @@
 ;;java  lang server (auto install eclipse EDT)
 (require 'lsp-java)
 (add-hook 'java-mode-hook #'lsp)
+;;(add-hook 'java-mode-hook 'lsp-jt-lens-mode) -- TODO how enable hook in progn mode?
 
 
 ;;org-mode additions
@@ -320,10 +322,11 @@
 
 ;; (add-hook 'after-save-hook 'intero-repl-run-main-on-save)
 
+;;errors when work with rustic
 ;; minimap on the right
-(require 'minimap)
-(setq minimap-window-location 'right)
-(minimap-mode 1)
+;;(require 'minimap)
+;;(setq minimap-window-location 'right)
+;;(minimap-mode 1)
 ;; FIXME Invalid face attribute :foreground nil
 
 (require 'lsp)
@@ -584,3 +587,51 @@
 (use-package lsp-treemacs)
 (lsp-treemacs-sync-mode 1)
 
+;; rustic - https://robert.kra.hn/posts/2021-02-07_rust-with-emacs/#rust-analyzer
+(use-package rustic
+  :ensure
+  :bind (:map rustic-mode-map
+              ("M-j" . lsp-ui-imenu)
+              ("M-?" . lsp-find-references)
+              ("C-c C-c l" . flycheck-list-errors)
+              ("C-c C-c a" . lsp-execute-code-action)
+              ("C-c C-c r" . lsp-rename)
+              ("C-c C-c q" . lsp-workspace-restart)
+              ("C-c C-c Q" . lsp-workspace-shutdown)
+              ("C-c C-c s" . lsp-rust-analyzer-status))
+  :config
+  ;; uncomment for less flashiness
+  ;; (setq lsp-eldoc-hook nil)
+  ;; (setq lsp-enable-symbol-highlighting nil)
+  ;; (setq lsp-signature-auto-activate nil)
+
+  ;; comment to disable rustfmt on save
+  (setq rustic-format-on-save t)
+  (add-hook 'rustic-mode-hook 'rk/rustic-mode-hook))
+
+(defun rk/rustic-mode-hook ()
+  ;; so that run C-c C-c C-r works without having to confirm, but don't try to
+  ;; save rust buffers that are not file visiting. Once
+  ;; https://github.com/brotzeit/rustic/issues/253 has been resolved this should
+  ;; no longer be necessary.
+  (when buffer-file-name
+    (setq-local buffer-save-without-query t)))
+
+(use-package company
+  :ensure
+  :custom
+  (company-idle-delay 0.5) ;; how long to wait until popup
+  ;; (company-begin-commands nil) ;; uncomment to disable popup
+  :bind
+  (:map company-active-map
+	      ("C-n". company-select-next)
+	      ("C-p". company-select-previous)
+	      ("M-<". company-select-first)
+	      ("M->". company-select-last)))
+
+(use-package yasnippet
+  :ensure
+  :config
+  (yas-reload-all)
+  (add-hook 'prog-mode-hook 'yas-minor-mode)
+  (add-hook 'text-mode-hook 'yas-minor-mode))
