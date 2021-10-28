@@ -99,7 +99,7 @@
  '(org-agenda-files '("~/my/org/todo.org"))
  '(package-check-signature nil)
  '(package-selected-packages
-   '(jenkinsfile-mode rustic plantuml-mode org-download selectrum-prescient selectrum alert org-alert lsp-java diff-hl treemacs-persp treemacs-magit treemacs-icons-dired treemacs-projectile projectile treemacs-evil use-package all-the-icons-dired doom-themes web-mode tide graphql-mode yaml-mode all-the-icons good-scroll minimap ranger helm-lsp lsp-treemacs lv lsp-mode vyper-mode virtualenvwrapper jedi yafolding vimish-fold magit elisp-format logview vlf elpy google-translate json-mode exec-path-from-shell list-packages-ext))
+   '(shackle helm jenkinsfile-mode rustic plantuml-mode org-download selectrum-prescient selectrum alert org-alert lsp-java diff-hl treemacs-persp treemacs-magit treemacs-icons-dired treemacs-projectile projectile treemacs-evil use-package all-the-icons-dired doom-themes web-mode tide graphql-mode yaml-mode all-the-icons good-scroll minimap ranger helm-lsp lsp-treemacs lv lsp-mode vyper-mode virtualenvwrapper jedi yafolding vimish-fold magit elisp-format logview vlf elpy google-translate json-mode exec-path-from-shell list-packages-ext))
  '(show-paren-mode t))
 
 (windmove-default-keybindings 'meta) ;; alt+ arrows moves coursor
@@ -141,9 +141,12 @@
 
   ;; put the point in the lowest line and return
   (next-line arg))
+
+;;local
 (global-set-key (kbd "C-d") 'duplicate-line)
-
-
+(global-set-key (kbd "C-S-f") 'grep-find)
+;;helm
+(global-set-key (kbd "C-f") 'helm-find)
 ;;magit
 (global-set-key (kbd "C-x g") 'magit-status)
 
@@ -197,6 +200,69 @@
 (require 'lsp-java)
 (add-hook 'java-mode-hook #'lsp)
 ;;(add-hook 'java-mode-hook 'lsp-jt-lens-mode) -- TODO how enable hook in progn mode?
+
+
+;;TODO -- use package?
+;; (use-package lsp-mode
+;;   :init
+;;   (setq lsp-prefer-flymake nil)
+;;   :demand t
+;;   :after jmi-init-platform-paths)
+
+;; (use-package lsp-ui
+;;   :config
+;;   (setq lsp-ui-doc-enable nil
+;;         lsp-ui-sideline-enable nil
+;;         lsp-ui-flycheck-enable t)
+;;   :after lsp-mode)
+
+;; (use-package dap-mode
+;;   :config
+;;   (dap-mode t)
+;;   (dap-ui-mode t))
+
+
+;; (use-package lsp-java
+;;   :init
+;;   (defun jmi/java-mode-config ()
+;;     (setq-local tab-width 4
+;;                 c-basic-offset 4)
+;;     (toggle-truncate-lines 1)
+;;     (setq-local tab-width 4)
+;;     (setq-local c-basic-offset 4)
+;;     (lsp))
+
+;;   :config
+;;   ;; Enable dap-java
+;;   (require 'dap-java)
+
+;;   ;; Support Lombok in our projects, among other things
+;;   (setq lsp-java-vmargs
+;;         (list "-noverify"
+;;               "-Xmx2G"
+;;               "-XX:+UseG1GC"
+;;               "-XX:+UseStringDeduplication"
+;;               (concat "-javaagent:" jmi/lombok-jar)
+;;               (concat "-Xbootclasspath/a:" jmi/lombok-jar))
+;;         lsp-file-watch-ignored
+;;         '(".idea" ".ensime_cache" ".eunit" "node_modules"
+;;           ".git" ".hg" ".fslckout" "_FOSSIL_"
+;;           ".bzr" "_darcs" ".tox" ".svn" ".stack-work"
+;;           "build")
+
+;;         lsp-java-import-order '["" "java" "javax" "#"]
+;;         ;; Don't organize imports on save
+;;         lsp-java-save-action-organize-imports nil
+
+;;         ;; Formatter profile
+;;         lsp-java-format-settings-url
+;;         (concat "file://" jmi/java-format-settings-file))
+
+;;   :hook (java-mode   . jmi/java-mode-config)
+
+;;   :demand t
+;;   :after (lsp lsp-mode dap-mode jmi-init-platform-paths))
+
 
 
 ;;org-mode additions
@@ -635,3 +701,60 @@
   (yas-reload-all)
   (add-hook 'prog-mode-hook 'yas-minor-mode)
   (add-hook 'text-mode-hook 'yas-minor-mode))
+
+(use-package hideshow
+  :bind (("C-\\" . hs-toggle-hiding)
+         ("C-|" . hs-show-all))
+  :init (add-hook #'prog-mode-hook #'hs-minor-mode)
+  :diminish hs-minor-mode
+  :config
+  (setq hs-special-modes-alist
+        (mapcar 'purecopy
+                '((c-mode "{" "}" "/[*/]" nil nil)
+                  (c++-mode "{" "}" "/[*/]" nil nil)
+                  (java-mode "{" "}" "/[*/]" nil nil)
+                  (rust-mode "{" "}" "/[*/]" nil nil)
+                  (go-mode "{" "}" "/[*/]" nil nil)
+                  (js-mode "{" "}" "/[*/]" nil)
+                  (json-mode "{" "}" "/[*/]" nil)
+                  (javascript-mode  "{" "}" "/[*/]" nil)))))
+
+;;init- https://gist.github.com/rksm/8c07d9ccc9e15adf752d3dd73dd9a61e
+(use-package shackle
+  :ensure
+  :diminish
+  :custom
+  (setq helm-display-function 'pop-to-buffer) 
+  (shackle-rules '((compilation-mode :noselect t)
+		   ("\\*Apropos\\|Help\\|Occur\\|tide-references\\*" :regexp t :same t :select t :inhibit-window-quit t)
+		   ("\\*magit" :regexp t :same t :select t)
+		   ("\\*shell.*" :regexp t :same t :select t)
+		   ("\\*PowerShell.*" :regexp t :same t :select t)
+		   ("\\*Cargo.*" :regexp t :other t :select nil)
+		   ("*Messages*" :select nil :other t)
+		   ("*Proced*" :select t :same t)
+		   ("*Buffer List*" :select t :same t)
+		   ("\\*Pp Eval" :regexp t :same nil :select t :other t)
+		   ("*Messages*" :same nil :other t :select t :inhibit-window-quit t)
+
+;;		   slime
+		   ("*slime-source*" :select nil :same nil :other t)
+		   ("*slime-description*" :select nil :other t :inhibit-window-quit t)
+		   ("\\*slime-repl" :regexp t :same nil :select nil :other t)
+		   ("\\*sldb" :regexp t :other t :inhibit-window-quit t :select t)
+		   ("\\*slime-compilation" :regexp t :same nil :select nil :other t)
+		   ("*slime-scratch*" :same nil :select t :other t)
+
+;;		   ert
+		   ("*ert*" :select nil :same nil :other t)
+
+		   ("\\`\\*helm.*?\\*\\'" :regexp t :align t :size 0.4)
+		   
+
+;;		   clojure
+		   ("*sesman CIDER browser*" :inhibit-window-quit t :select t :same t)
+		   ("\\*cider-repl" :regexp t :same nil :other t)))
+  (shackle-default-rule nil))
+
+(shackle-mode)
+(helm-mode)
