@@ -142,9 +142,50 @@
   ;; put the point in the lowest line and return
   (next-line arg))
 
+;; m (mark the buffer you want to keep)
+;; t (toggle marks)
+;; D (kill all marked buffers)
+;;local: ibuffer
+(global-set-key (kbd "C-x C-b") 'ibuffer)
+;; Ensure ibuffer opens with point at the current buffer's entry.
+(defadvice ibuffer
+  (around ibuffer-point-to-most-recent) ()
+  "Open ibuffer with cursor pointed to most recent buffer name."
+  (let ((recent-buffer-name (buffer-name)))
+    ad-do-it
+    (ibuffer-jump-to-buffer recent-buffer-name)))
+(ad-activate 'ibuffer)
+
+;; https://stackoverflow.com/a/51593874
+(defun my/kill-all-buffers-except-toolbox ()
+  "Kill all buffers except current one and toolkit (*Messages*, *scratch*). Close other windows."
+  (interactive)
+  (mapc 'kill-buffer (remove-if
+                       (lambda (x)
+                         (or
+                           (eq x (current-buffer))
+                           (member (buffer-name x) '("*Messages*" "*scratch*"))))
+                       (buffer-list)))
+  ;; TODO add kill open tabs
+  (delete-other-windows))
+
+
+
+;;local: tab-bar
+(tab-bar-mode 1)
+(setq tab-bar-new-tab-choice "*scratch*")
+(setq tab-bar-show 1)
+(global-set-key (kbd "C-S-t") 'tab-bar-new-tab)
+(global-set-key (kbd "C-w")   'tab-bar-close-tab)
+
+
 ;;local
 (global-set-key (kbd "C-d") 'duplicate-line)
 (global-set-key (kbd "C-S-f") 'grep-find)
+(global-set-key (kbd "C-/") 'comment-region)
+(global-set-key (kbd "C-?") 'uncomment-region)
+(global-set-key (kbd "<escape>") 'keyboard-quit)
+
 ;;helm
 (global-set-key (kbd "C-f") 'helm-find)
 ;;magit
