@@ -99,7 +99,7 @@
  '(org-agenda-files '("~/my/org/todo.org"))
  '(package-check-signature nil)
  '(package-selected-packages
-   '(shackle helm jenkinsfile-mode rustic plantuml-mode org-download selectrum-prescient selectrum alert org-alert lsp-java diff-hl treemacs-persp treemacs-magit treemacs-icons-dired treemacs-projectile projectile treemacs-evil use-package all-the-icons-dired doom-themes web-mode tide graphql-mode yaml-mode all-the-icons good-scroll minimap ranger helm-lsp lsp-treemacs lv lsp-mode vyper-mode virtualenvwrapper jedi yafolding vimish-fold magit elisp-format logview vlf elpy google-translate json-mode exec-path-from-shell list-packages-ext))
+   '(shackle helm jenkinsfile-mode rustic plantuml-mode org-download alert org-alert lsp-java diff-hl treemacs-persp treemacs-magit treemacs-icons-dired treemacs-projectile projectile treemacs-evil use-package all-the-icons-dired doom-themes web-mode tide graphql-mode yaml-mode all-the-icons good-scroll minimap ranger helm-lsp lsp-treemacs lv lsp-mode vyper-mode virtualenvwrapper jedi yafolding vimish-fold magit elisp-format logview vlf elpy google-translate json-mode exec-path-from-shell list-packages-ext))
  '(show-paren-mode t))
 
 (windmove-default-keybindings 'meta) ;; alt+ arrows moves coursor
@@ -175,9 +175,9 @@
 (tab-bar-mode 1)
 (setq tab-bar-new-tab-choice "*scratch*")
 (setq tab-bar-show 1)
-(global-set-key (kbd "C-S-t") 'tab-bar-new-tab)
+(global-set-key (kbd "C-t")   'tab-bar-new-tab)
+(global-set-key (kbd "C-S-t") 'tab-bar-undo-close-tab)
 (global-set-key (kbd "C-w")   'tab-bar-close-tab)
-
 
 ;;local
 (global-set-key (kbd "C-d") 'duplicate-line)
@@ -204,18 +204,6 @@
 
 ; ask before open large files
 (require 'vlf-setup) ;;--no-before-install-stable-melpa
-
-
-;;Selectrum aims to provide a better completion UI using standard Emacs APIs. In essence it is an interface for selecting items from a list.
-;; https://github.com/raxod502/selectrum#alternative-1-prescient
-(selectrum-mode +1)
-;; to make sorting and filtering more intelligent
-
-;;CPU consumingc !!! 
-(selectrum-prescient-mode +1)
-;; to save your command history on disk, so the sorting gets more
-;; intelligent over time
-(prescient-persist-mode +1)
 
 
 (defun load-dark-theme ()
@@ -798,4 +786,38 @@
   (shackle-default-rule nil))
 
 (shackle-mode)
-(helm-mode)
+
+(helm-mode 1 )
+(define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
+(define-key helm-map (kbd "C-S-z") 'helm-select-action) 
+(setq helm-M-x-fuzzy-match t)
+(global-set-key (kbd "C-x C-f") 'helm-find-files)
+(global-set-key (kbd "M-x") 'helm-M-x)
+
+(define-key helm-map (kbd "C-<tab>") ;;https://stackoverflow.com/a/27652821
+  (lambda ()
+    (interactive)
+    (helm-move-selection-common :where 'edge :direction 'previous)
+    (helm-move-selection-common :where 'line :direction 'next)
+    (helm-move-selection-common :where 'line :direction 'next)
+    (helm-execute-persistent-action)))
+
+(use-package savehist
+  :init
+  (savehist-mode))
+
+;; (use-package helm
+;;   :ensure t
+;;   :demand
+;;   :bind (("M-x" . helm-M-x)
+;;          ("C-x C-f" . helm-find-files)
+;;          ("C-x b" . helm-buffers-list)
+;;          ("C-x c o" . helm-occur)) ;SC
+;;          ("M-y" . helm-show-kill-ring) ;SC
+;;          ("C-x r b" . helm-filtered-bookmarks) ;SC
+;;   :requires helm-config
+;;   :config (helm-mode 1))
+
+;;;;;;;;;;;;;;;;;;;
+
+
