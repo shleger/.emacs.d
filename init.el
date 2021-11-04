@@ -99,7 +99,7 @@
  '(org-agenda-files '("~/my/org/todo.org"))
  '(package-check-signature nil)
  '(package-selected-packages
-   '(org-bullets vertico orderless shackle helm jenkinsfile-mode rustic plantuml-mode org-download selectrum-prescient selectrum alert org-alert lsp-java diff-hl treemacs-persp treemacs-magit treemacs-icons-dired treemacs-projectile projectile treemacs-evil use-package all-the-icons-dired doom-themes web-mode tide graphql-mode yaml-mode all-the-icons good-scroll minimap ranger helm-lsp lsp-treemacs lv lsp-mode vyper-mode virtualenvwrapper jedi yafolding vimish-fold magit elisp-format logview vlf elpy google-translate json-mode exec-path-from-shell list-packages-ext))
+   '(shackle helm jenkinsfile-mode rustic plantuml-mode org-download alert org-alert lsp-java diff-hl treemacs-persp treemacs-magit treemacs-icons-dired treemacs-projectile projectile treemacs-evil use-package all-the-icons-dired doom-themes web-mode tide graphql-mode yaml-mode all-the-icons good-scroll minimap ranger helm-lsp lsp-treemacs lv lsp-mode vyper-mode virtualenvwrapper jedi yafolding vimish-fold magit elisp-format logview vlf elpy google-translate json-mode exec-path-from-shell list-packages-ext))
  '(show-paren-mode t))
 
 (windmove-default-keybindings 'meta) ;; alt+ arrows moves coursor
@@ -752,6 +752,8 @@
 (use-package shackle
   :ensure
   :diminish
+  :init
+  (shackle-mode)
   :custom
   (setq helm-display-function 'pop-to-buffer) 
   (shackle-rules '((compilation-mode :noselect t)
@@ -785,7 +787,6 @@
 		   ("\\*cider-repl" :regexp t :same nil :other t)))
   (shackle-default-rule nil))
 
-(shackle-mode)
 
 (helm-mode 1 )
 (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
