@@ -99,7 +99,7 @@
  '(org-agenda-files '("~/my/org/todo.org"))
  '(package-check-signature nil)
  '(package-selected-packages
-   '(shackle helm jenkinsfile-mode rustic plantuml-mode org-download alert org-alert lsp-java diff-hl treemacs-persp treemacs-magit treemacs-icons-dired treemacs-projectile projectile treemacs-evil use-package all-the-icons-dired doom-themes web-mode tide graphql-mode yaml-mode all-the-icons good-scroll minimap ranger helm-lsp lsp-treemacs lv lsp-mode vyper-mode virtualenvwrapper jedi yafolding vimish-fold magit elisp-format logview vlf elpy google-translate json-mode exec-path-from-shell list-packages-ext))
+   '(org-bullets vertico orderless shackle helm jenkinsfile-mode rustic plantuml-mode org-download selectrum-prescient selectrum alert org-alert lsp-java diff-hl treemacs-persp treemacs-magit treemacs-icons-dired treemacs-projectile projectile treemacs-evil use-package all-the-icons-dired doom-themes web-mode tide graphql-mode yaml-mode all-the-icons good-scroll minimap ranger helm-lsp lsp-treemacs lv lsp-mode vyper-mode virtualenvwrapper jedi yafolding vimish-fold magit elisp-format logview vlf elpy google-translate json-mode exec-path-from-shell list-packages-ext))
  '(show-paren-mode t))
 
 (windmove-default-keybindings 'meta) ;; alt+ arrows moves coursor
@@ -820,4 +820,9 @@
 
 ;;;;;;;;;;;;;;;;;;;
 
-
+;; https://mstempl.netlify.app/post/beautify-org-mode/
+(use-package org-bullets
+  :custom
+  (org-bullets-bullet-list '("◉" "◆" "▶" "☯" "○" "☯" "✸" "☯" "✿" "☯" "✜" "☯" "☯" ))
+  (org-ellipsis "⤵")
+  :hook (org-mode . org-bullets-mode))
