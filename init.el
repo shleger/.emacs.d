@@ -99,7 +99,7 @@
  '(org-agenda-files '("~/my/org/todo.org"))
  '(package-check-signature nil)
  '(package-selected-packages
-   '(shackle helm jenkinsfile-mode rustic plantuml-mode org-download alert org-alert lsp-java diff-hl treemacs-persp treemacs-magit treemacs-icons-dired treemacs-projectile projectile treemacs-evil use-package all-the-icons-dired doom-themes web-mode tide graphql-mode yaml-mode all-the-icons good-scroll minimap ranger helm-lsp lsp-treemacs lv lsp-mode vyper-mode virtualenvwrapper jedi yafolding vimish-fold magit elisp-format logview vlf elpy google-translate json-mode exec-path-from-shell list-packages-ext))
+ '(shackle helm jenkinsfile-mode rustic plantuml-mode org-download alert org-alert lsp-java diff-hl treemacs-persp treemacs-magit treemacs-icons-dired treemacs-projectile projectile treemacs-evil use-package all-the-icons-dired doom-themes web-mode tide graphql-mode yaml-mode all-the-icons good-scroll minimap ranger lsp-treemacs lv lsp-mode vyper-mode virtualenvwrapper jedi yafolding vimish-fold magit elisp-format logview vlf elpy google-translate json-mode exec-path-from-shell list-packages-ext))
  '(show-paren-mode t))
 
 (windmove-default-keybindings 'meta) ;; alt+ arrows moves coursor
@@ -174,7 +174,7 @@
 ;;local: tab-bar
 (tab-bar-mode 1)
 (setq tab-bar-new-tab-choice "*scratch*")
-(setq tab-bar-show 1)
+(setq tab-bar-show nil)
 (global-set-key (kbd "C-t")   'tab-bar-new-tab)
 (global-set-key (kbd "C-S-t") 'tab-bar-undo-close-tab)
 (global-set-key (kbd "C-w")   'tab-bar-close-tab)
@@ -185,6 +185,10 @@
 (global-set-key (kbd "C-/") 'comment-region)
 (global-set-key (kbd "C-?") 'uncomment-region)
 (global-set-key (kbd "<escape>") 'keyboard-quit)
+(global-set-key (kbd "C-<delete>") 'kill-whitespace-or-word)
+(global-set-key (kbd "M-<SPC>") 'company-complete)
+
+
 
 ;;helm
 (global-set-key (kbd "C-f") 'helm-find)
@@ -229,69 +233,6 @@
 (require 'lsp-java)
 (add-hook 'java-mode-hook #'lsp)
 ;;(add-hook 'java-mode-hook 'lsp-jt-lens-mode) -- TODO how enable hook in progn mode?
-
-
-;;TODO -- use package?
-;; (use-package lsp-mode
-;;   :init
-;;   (setq lsp-prefer-flymake nil)
-;;   :demand t
-;;   :after jmi-init-platform-paths)
-
-;; (use-package lsp-ui
-;;   :config
-;;   (setq lsp-ui-doc-enable nil
-;;         lsp-ui-sideline-enable nil
-;;         lsp-ui-flycheck-enable t)
-;;   :after lsp-mode)
-
-;; (use-package dap-mode
-;;   :config
-;;   (dap-mode t)
-;;   (dap-ui-mode t))
-
-
-;; (use-package lsp-java
-;;   :init
-;;   (defun jmi/java-mode-config ()
-;;     (setq-local tab-width 4
-;;                 c-basic-offset 4)
-;;     (toggle-truncate-lines 1)
-;;     (setq-local tab-width 4)
-;;     (setq-local c-basic-offset 4)
-;;     (lsp))
-
-;;   :config
-;;   ;; Enable dap-java
-;;   (require 'dap-java)
-
-;;   ;; Support Lombok in our projects, among other things
-;;   (setq lsp-java-vmargs
-;;         (list "-noverify"
-;;               "-Xmx2G"
-;;               "-XX:+UseG1GC"
-;;               "-XX:+UseStringDeduplication"
-;;               (concat "-javaagent:" jmi/lombok-jar)
-;;               (concat "-Xbootclasspath/a:" jmi/lombok-jar))
-;;         lsp-file-watch-ignored
-;;         '(".idea" ".ensime_cache" ".eunit" "node_modules"
-;;           ".git" ".hg" ".fslckout" "_FOSSIL_"
-;;           ".bzr" "_darcs" ".tox" ".svn" ".stack-work"
-;;           "build")
-
-;;         lsp-java-import-order '["" "java" "javax" "#"]
-;;         ;; Don't organize imports on save
-;;         lsp-java-save-action-organize-imports nil
-
-;;         ;; Formatter profile
-;;         lsp-java-format-settings-url
-;;         (concat "file://" jmi/java-format-settings-file))
-
-;;   :hook (java-mode   . jmi/java-mode-config)
-
-;;   :demand t
-;;   :after (lsp lsp-mode dap-mode jmi-init-platform-paths))
-
 
 
 ;;org-mode additions
@@ -496,8 +437,10 @@
 (add-hook 'typescript-mode-hook #'setup-tide-mode)
 (setq tide-format-options '(:insertSpaceAfterFunctionKeywordForAnonymousFunctions t :placeOpenBraceOnNewLineForFunctions nil))
 
-;;TSX
 (require 'web-mode)
+
+
+;;TSX
 (add-to-list 'auto-mode-alist '("\\.tsx\\'" . web-mode))
 (add-hook 'web-mode-hook
           (lambda ()
@@ -508,7 +451,6 @@
 
 
 ;;JSX
-(require 'web-mode)
 (add-to-list 'auto-mode-alist '("\\.jsx\\'" . web-mode))
 (add-hook 'web-mode-hook
           (lambda ()
@@ -525,6 +467,46 @@
 (global-set-key (kbd "M-t") 'google-translate-smooth-translate)
 (setq google-translate-translation-directions-alist '(("en" . "ru")))
 
+(use-package lsp-mode
+  :config
+  (setq lsp-idle-delay 0.5
+        lsp-enable-symbol-highlighting t
+        lsp-enable-snippet nil  ;; Not supported by company capf, which is the recommended company backend
+        lsp-pyls-plugins-flake8-enabled t)
+  (lsp-register-custom-settings
+   '(("pyls.plugins.pyls_mypy.enabled" t t)
+     ("pyls.plugins.pyls_mypy.live_mode" nil t)
+     ("pyls.plugins.pyls_black.enabled" t t)
+     ("pyls.plugins.pyls_isort.enabled" t t)
+
+     ;; Disable these as they're duplicated by flake8
+     ("pyls.plugins.pycodestyle.enabled" nil t)
+     ("pyls.plugins.mccabe.enabled" nil t)
+     ("pyls.plugins.pyflakes.enabled" nil t)))
+  :hook
+  ((python-mode . lsp)
+   (lsp-mode . lsp-enable-which-key-integration))
+  )
+
+(use-package lsp-ui
+  :config (setq lsp-ui-sideline-show-hover t
+                lsp-ui-sideline-delay 0.5
+                lsp-ui-doc-delay 5
+                lsp-ui-sideline-ignore-duplicates t
+                lsp-ui-doc-position 'bottom
+                lsp-ui-doc-alignment 'frame
+                lsp-ui-doc-header nil
+                lsp-ui-doc-include-signature t
+                lsp-ui-doc-use-childframe t)
+  :commands lsp-ui-mode)
+
+(use-package pyvenv
+  :demand t
+  :config
+  (setq pyvenv-workon "emacs")  ; Default venv
+  (pyvenv-tracking-mode 1))  ; Automatically use pyvenv-workon via dir-locals
+
+
 ;;golang
 (require 'lsp-mode)
 (add-hook 'go-mode-hook #'lsp-deferred)
@@ -534,27 +516,6 @@
   (add-hook 'before-save-hook #'lsp-format-buffer t t)
   (add-hook 'before-save-hook #'lsp-organize-imports t t))
 (add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
-
-;;python
-;;(add-hook 'python-mode-hook 'anaconda-mode)
-;;(add-hook 'python-mode-hook 'anaconda-eldoc-mode)
-;;use IPython
-;;(setq python-shell-interpreter "ipython")
-
-(elpy-enable) ;; - python mode enable 
-(setq elpy-rpc-python-command "python3")
-(add-hook 'python-mode-hook 'jedi:setup)
-(setq jedi:complete-on-dot t)                 ; optional
-(require 'virtualenvwrapper)
-(venv-initialize-interactive-shells) ;; if you want interactive shell support
-(venv-initialize-eshell) ;; if you want eshell support
-;; note that setting `venv-location` is not necessary if you
-;; use the default location (`~/.virtualenvs`), or if the
-;; the environment variable `WORKON_HOME` points to the right place
-(add-hook 'inferior-python-mode-hook
-          (lambda ()
-            (setq comint-move-point-for-output t)))
-
 
 ;;build and test
 (defun my-go-mode-hook ()
@@ -731,6 +692,47 @@
   (add-hook 'prog-mode-hook 'yas-minor-mode)
   (add-hook 'text-mode-hook 'yas-minor-mode))
 
+(use-package yaml-mode
+  :ensure t
+  :mode (".yaml$")
+  :hook
+  (yaml-mode . yaml-mode-outline-hook)
+
+  :init
+    (defun yaml-outline-level ()
+    "Return the outline level based on the indentation, hardcoded at 2 spaces."
+    (s-count-matches "[ ]\\{2\\}" (match-string 0)))
+    
+  (defun yaml-mode-outline-hook ()
+    (outline-minor-mode)
+    (define-key yaml-mode-map (kbd "TAB") 'outline-toggle-children)
+    (define-key yaml-mode-map (kbd "<backtab>") 'outline-show-all)
+    ;;    (setq outline-regexp "^\\([ ]\\{2\\}\\)*\\([-] \\)?\\([\"][^\"]*[\"]\\|[a-zA-Z0-9_-]*\\): *\\([>|]\\|&[a-zA-Z0-9_-]*\\)?$")
+    (setq outline-regexp ;;https://github.com/yoshiki/yaml-mode/issues/25#issuecomment-797940023
+      (rx
+       (seq
+	bol
+	(group (zero-or-more "  ")
+	       (or (group
+		    (seq (or (seq "\"" (*? (not (in "\"" "\n"))) "\"")
+			     (seq "'" (*? (not (in "'" "\n"))) "'")
+			     (*? (not (in ":" "\n"))))
+			 ":"
+			 (?? (seq
+			      (*? " ")
+			      (or (seq "&" (one-or-more nonl))
+				  (seq ">-")
+				  (seq "|"))
+			      eol))))
+		   (group (seq
+			   "- "
+			   (+ (not (in ":" "\n")))
+			   ":"
+			   (+ nonl)
+			   eol)))))))
+    (setq outline-level 'yaml-outline-level))
+  )
+
 (use-package hideshow
   :bind (("C-\\" . hs-toggle-hiding)
          ("C-|" . hs-show-all))
@@ -827,3 +829,21 @@
   (org-bullets-bullet-list '("◉" "◆" "▶" "☯" "○" "☯" "✸" "☯" "✿" "☯" "✜" "☯" "☯" ))
   (org-ellipsis "⤵")
   :hook (org-mode . org-bullets-mode))
+
+;; TODO del?
+;;https://gist.github.com/Lukewh/47b200f0af5a632205f0fbec48669647
+;; (use-package expand-region
+;;   :ensure t
+;;   :bind (("C-=" . er/expand-region)
+;; 	 ("C--" . er/contract-region)))
+
+
+;;https://stackoverflow.com/a/17959258
+(defun kill-whitespace-or-word ()
+  (interactive)
+  (if (looking-at "[ \t\n]")
+      (let ((p (point)))
+        (re-search-forward "[^ \t\n]" nil :no-error)
+        (backward-char)
+        (kill-region p (point)))
+    (kill-word 1)))
