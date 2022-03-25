@@ -354,6 +354,16 @@
 (require 'haskell-process)
 (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
 
+;; https://stackoverflow.com/a/71212327
+(defun my-haskell-load-and-run ()
+  "Loads and runs the current Haskell file main function."
+  (interactive)
+  (haskell-process-load-file)
+  (haskell-interactive-mode-run-expr "main"))
+(defun my-haskell-mode-hook ()
+  (local-set-key (kbd "C-x C-r") 'my-haskell-load-and-run)) ;;  C-c C-c does not work yet (need to switch off from haskell-mode)
+(add-hook 'haskell-mode-hook 'my-haskell-mode-hook)
+
 ;;return to previos buffer
 (global-set-key (kbd "M-o")  'mode-line-other-buffer)
 
