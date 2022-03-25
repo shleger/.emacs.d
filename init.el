@@ -99,7 +99,7 @@
  '(org-agenda-files '("~/my/org/todo.org"))
  '(package-check-signature nil)
  '(package-selected-packages
- '(shackle helm jenkinsfile-mode rustic plantuml-mode org-download alert org-alert lsp-java diff-hl treemacs-persp treemacs-magit treemacs-icons-dired treemacs-projectile projectile treemacs-evil use-package all-the-icons-dired doom-themes web-mode tide graphql-mode yaml-mode all-the-icons good-scroll minimap ranger lsp-treemacs lv lsp-mode vyper-mode virtualenvwrapper jedi yafolding vimish-fold magit elisp-format logview vlf elpy google-translate json-mode exec-path-from-shell list-packages-ext))
+   '(which-key shackle helm jenkinsfile-mode rustic plantuml-mode org-download alert org-alert lsp-java diff-hl treemacs-persp treemacs-magit treemacs-icons-dired treemacs-projectile projectile treemacs-evil use-package all-the-icons-dired doom-themes web-mode tide graphql-mode yaml-mode all-the-icons good-scroll minimap ranger lsp-treemacs lv lsp-mode vyper-mode virtualenvwrapper jedi yafolding vimish-fold magit elisp-format logview vlf elpy google-translate json-mode exec-path-from-shell list-packages-ext))
  '(show-paren-mode t))
 
 (windmove-default-keybindings 'meta) ;; alt+ arrows moves coursor
@@ -337,27 +337,6 @@
 (require 'google-translate)
 (require 'google-translate-smooth-ui)
 
-;; (add-hook 'haskell-mode-hook 'intero-mode)
-
-
-;; (defun intero-repl-run-main-on-save()
-;;  (when (eq major-mode 'haskell-mode)
-;;    (intero-repl-load-main)
-;;  )
-;; )
-;; ;;run haskell app in intero-mode on after-save
-;; (defun intero-repl-load-main (&optional prompt-options)
-;;   (let ((file (intero-path-for-ghci (intero-buffer-file-name))))
-;;     (intero-with-repl-buffer prompt-options
-;;       (comint-simple-send
-;;          (get-buffer-process (current-buffer))
-;;          ":set prompt \"\\n\"")
-;;           (comint-simple-send (get-buffer-process (current-buffer)) ":reload")
-;; 	  (comint-simple-send (get-buffer-process (current-buffer)) ":main")
-;;           (comint-simple-send (get-buffer-process (current-buffer)) ":set prompt \"\\4 \""))))
-
-;; (add-hook 'after-save-hook 'intero-repl-run-main-on-save)
-
 ;;errors when work with rustic
 ;; minimap on the right
 ;;(require 'minimap)
@@ -467,7 +446,10 @@
 (global-set-key (kbd "M-t") 'google-translate-smooth-translate)
 (setq google-translate-translation-directions-alist '(("en" . "ru")))
 
+
 (use-package lsp-mode
+  :init
+  ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
   :config
   (setq lsp-idle-delay 0.5
         lsp-enable-symbol-highlighting t
@@ -483,10 +465,24 @@
      ("pyls.plugins.pycodestyle.enabled" nil t)
      ("pyls.plugins.mccabe.enabled" nil t)
      ("pyls.plugins.pyflakes.enabled" nil t)))
-  :hook
-  ((python-mode . lsp)
-   (lsp-mode . lsp-enable-which-key-integration))
-  )
+  :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
+         (python-mode . lsp)
+	 (haskell-mode . lsp)
+         ;; if you want which-key integration
+         (lsp-mode . lsp-enable-which-key-integration))
+  :commands lsp)
+
+;; if you are helm user
+(use-package helm-lsp :commands helm-lsp-workspace-symbol)
+(use-package lsp-treemacs :commands lsp-treemacs-errors-list)
+
+;; optionally if you want to use debugger
+(use-package dap-mode)
+;; (use-package dap-LANGUAGE) to load the dap adapter for your language
+
+;; optional if you want which-key integration
+(use-package which-key :config (which-key-mode))
+
 
 (use-package lsp-ui
   :config (setq lsp-ui-sideline-show-hover t
