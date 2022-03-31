@@ -94,12 +94,12 @@
       (regexp . "[0-9]{4}-[01][0-9]-[0-3][0-9][012][0-9]:[0-5][0-9]:[0-9]{8}")
       (aliases))))
  '(lsp-haskell-server-path
-   "/home/saa/.config/Code - OSS/User/globalStorage/haskell.haskell/haskell-language-server-0.7.0-linux-8.8.4")
+   "/home/saa/.config/Code - OSS/User/globalStorage/haskell.haskell/haskell-language-server-1.6.1.0-linux-9.0.2")
  '(mouse-wheel-tilt-scroll t)
  '(org-agenda-files '("~/my/org/todo.org"))
  '(package-check-signature nil)
  '(package-selected-packages
-   '(which-key shackle helm jenkinsfile-mode rustic plantuml-mode org-download alert org-alert lsp-java diff-hl treemacs-persp treemacs-magit treemacs-icons-dired treemacs-projectile projectile treemacs-evil use-package all-the-icons-dired doom-themes web-mode tide graphql-mode yaml-mode all-the-icons good-scroll minimap ranger lsp-treemacs lv lsp-mode vyper-mode virtualenvwrapper jedi yafolding vimish-fold magit elisp-format logview vlf elpy google-translate json-mode exec-path-from-shell list-packages-ext))
+   '(solidity-mode which-key shackle helm jenkinsfile-mode rustic plantuml-mode org-download alert org-alert lsp-java diff-hl treemacs-persp treemacs-magit treemacs-icons-dired treemacs-projectile projectile treemacs-evil use-package all-the-icons-dired doom-themes web-mode tide graphql-mode yaml-mode all-the-icons good-scroll minimap ranger lsp-treemacs lv lsp-mode vyper-mode virtualenvwrapper jedi yafolding vimish-fold magit elisp-format logview vlf elpy google-translate json-mode exec-path-from-shell list-packages-ext))
  '(show-paren-mode t))
 
 (windmove-default-keybindings 'meta) ;; alt+ arrows moves coursor
@@ -361,7 +361,7 @@
   (haskell-process-load-file)
   (haskell-interactive-mode-run-expr "main"))
 (defun my-haskell-mode-hook ()
-  (local-set-key (kbd "C-x C-r") 'my-haskell-load-and-run)) ;;  C-c C-c does not work yet (need to switch off from haskell-mode)
+  (local-set-key (kbd "C-a C-a") 'my-haskell-load-and-run)) 
 (add-hook 'haskell-mode-hook 'my-haskell-mode-hook)
 
 ;;return to previos buffer
@@ -478,6 +478,9 @@
   :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
          (python-mode . lsp)
 	 (haskell-mode . lsp)
+;;	 (java-mode . lsp)
+;;	 (typescript-mode . lsp)
+;;	 (json-mode . lsp)
          ;; if you want which-key integration
          (lsp-mode . lsp-enable-which-key-integration))
   :commands lsp)
@@ -853,3 +856,16 @@
         (backward-char)
         (kill-region p (point)))
     (kill-word 1)))
+
+;; https://www.reddit.com/r/emacs/comments/2amn1v/comment/cixq7zx/?utm_source=share&utm_medium=web2x&context=3
+(defadvice isearch-mode (around isearch-mode-default-string (forward &optional regexp op-fun recursive-edit word-p) activate)
+  (if (and transient-mark-mode mark-active (not (eq (mark) (point))))
+      (progn
+        (isearch-update-ring (buffer-substring-no-properties (mark) (point)))
+        (deactivate-mark)
+        ad-do-it
+        (if (not forward)
+            (isearch-repeat-backward)
+          (goto-char (mark))
+          (isearch-repeat-forward)))
+    ad-do-it))
