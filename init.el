@@ -99,7 +99,7 @@
  '(org-agenda-files '("~/my/org/todo.org"))
  '(package-check-signature nil)
  '(package-selected-packages
-   '(solidity-mode which-key shackle helm jenkinsfile-mode rustic plantuml-mode org-download alert org-alert lsp-java diff-hl treemacs-persp treemacs-magit treemacs-icons-dired treemacs-projectile projectile treemacs-evil use-package all-the-icons-dired doom-themes web-mode tide graphql-mode yaml-mode all-the-icons good-scroll minimap ranger lsp-treemacs lv lsp-mode vyper-mode virtualenvwrapper jedi yafolding vimish-fold magit elisp-format logview vlf elpy google-translate json-mode exec-path-from-shell list-packages-ext))
+   '(ormolu dockerfile-mode solidity-mode which-key shackle helm jenkinsfile-mode rustic plantuml-mode org-download alert org-alert lsp-java diff-hl treemacs-persp treemacs-magit treemacs-icons-dired treemacs-projectile projectile treemacs-evil use-package all-the-icons-dired doom-themes web-mode tide graphql-mode yaml-mode all-the-icons good-scroll minimap ranger lsp-treemacs lv lsp-mode vyper-mode virtualenvwrapper jedi yafolding vimish-fold magit elisp-format logview vlf elpy google-translate json-mode exec-path-from-shell list-packages-ext))
  '(show-paren-mode t))
 
 (windmove-default-keybindings 'meta) ;; alt+ arrows moves coursor
@@ -363,6 +363,16 @@
 (defun my-haskell-mode-hook ()
   (local-set-key (kbd "C-a C-a") 'my-haskell-load-and-run)) 
 (add-hook 'haskell-mode-hook 'my-haskell-mode-hook)
+
+;; enable formatter
+(use-package ormolu
+  :hook (haskell-mode . ormolu-format-on-save-mode)
+  :bind
+  (:map haskell-mode-map
+    ("C-c f" . ormolu-format-buffer)))
+;; (require  'ormolu)
+;; (add-hook 'haskell-mode-hook 'ormolu-format-on-save-mode)
+
 
 ;;return to previos buffer
 (global-set-key (kbd "M-o")  'mode-line-other-buffer)
