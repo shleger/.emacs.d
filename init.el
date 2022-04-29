@@ -508,15 +508,39 @@
 
 
 (use-package lsp-ui
+  :requires lsp-mode flycheck
   :config (setq lsp-ui-sideline-show-hover t
                 lsp-ui-sideline-delay 0.5
-                lsp-ui-doc-delay 5
                 lsp-ui-sideline-ignore-duplicates t
+		lsp-ui-sideline-show-diagnostics t
+		lsp-ui-sideline-show-code-actions t
+		lsp-ui-sideline-update-mode 'line
+                lsp-ui-sideline-toggle-symbol-info t
+
+	        lsp-ui-flycheck-enable t
+                lsp-ui-flycheck-list-position 'right
+                lsp-ui-flycheck-live-reporting t
+		
+		lsp-ui-peek-enable t
+	        lsp-ui-peek-fontify 'always
+	        lsp-ui-peak-always-show t
+                lsp-ui-peek-list-width 60
+                lsp-ui-peek-peek-height 20
+
+		lsp-ui-imenu-enable t
+        	lsp-ui-imenu-kind-position 'top
+		
+		lsp-ui-doc-delay 5
                 lsp-ui-doc-position 'bottom
                 lsp-ui-doc-alignment 'frame
                 lsp-ui-doc-header nil
                 lsp-ui-doc-include-signature t
                 lsp-ui-doc-use-childframe t)
+  :bind
+  (:map lsp-mode-map
+	("C-c m" . lsp-ui-imenu)
+	("C-c s" . lsp-ui-sideline-mode))
+	
   :commands lsp-ui-mode)
 
 (use-package pyvenv
