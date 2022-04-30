@@ -360,9 +360,14 @@
   (interactive)
   (haskell-process-load-file)
   (haskell-interactive-mode-run-expr "main"))
-(defun my-haskell-mode-hook ()
-  (local-set-key (kbd "C-a C-a") 'my-haskell-load-and-run)) 
-(add-hook 'haskell-mode-hook 'my-haskell-mode-hook)
+
+;; map to interactive run instead of 'haskell-process-cabal-build
+(define-key interactive-haskell-mode-map  (kbd "C-c C-c") 'my-haskell-load-and-run )
+;OR
+;; (defun my-haskell-mode-hook ()
+;;   (local-set-key (kbd "C-c c") 'my-haskell-load-and-run)) 
+;; (add-hook 'haskell-mode-hook 'my-haskell-mode-hook)
+
 
 ;; enable formatter
 (use-package ormolu
