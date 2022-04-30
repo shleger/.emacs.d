@@ -361,12 +361,14 @@
   (haskell-process-load-file)
   (haskell-interactive-mode-run-expr "main"))
 
-;; map to interactive run instead of 'haskell-process-cabal-build
+;; override key for 'haskell-process-cabal-build with interactive run
 (define-key interactive-haskell-mode-map  (kbd "C-c C-c") 'my-haskell-load-and-run )
 ;OR
 ;; (defun my-haskell-mode-hook ()
 ;;   (local-set-key (kbd "C-c c") 'my-haskell-load-and-run)) 
 ;; (add-hook 'haskell-mode-hook 'my-haskell-mode-hook)
+;OR
+;;(define-key (current-global-map) [remap haskell-process-cabal-build] 'my-haskell-load-and-run)
 
 
 ;; enable formatter
