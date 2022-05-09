@@ -362,7 +362,9 @@
 
 
 ;;override find refs
-(define-key haskell-mode-map (kbd "M-/") 'xref-find-definitions) ;; experemantal
+;;(define-key haskell-mode-map (kbd "M-/") 'xref-find-definitions) ;; experemantal
+(define-key haskell-mode-map (kbd "M-/") 'lsp-find-references) ;; find usage
+(define-key haskell-mode-map (kbd "S-<f2>") 'lsp-rename) ;; rename
 (define-key (current-global-map) [remap haskell-mode-jump-to-def-or-tag] 'lsp-find-definition) ;; override M-. in haskell-mode (lsp)
 
 ;; override key for 'haskell-process-cabal-build with interactive run
