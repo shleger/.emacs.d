@@ -171,7 +171,7 @@
 
 
 ;;local: tab-bar
-(tab-bar-mode 1)
+(tab-bar-mode 0)
 (setq tab-bar-new-tab-choice "*scratch*")
 (setq tab-bar-show nil)
 (global-set-key (kbd "C-t")   'tab-bar-new-tab)
@@ -209,18 +209,19 @@
 (require 'vlf-setup) ;;--no-before-install-stable-melpa
 
 
-(defun load-dark-theme ()
-  "Dark theme for night"
-  (load-theme 'doom-zenburn t)
-  )
+(run-at-time 2 3600 'saa/load-timed-theme)
+(defun saa/load-timed-theme ()
+  "Dark theme for night and day with timer"
 
 ;;day | night theme
 ;;"(string-to-number (format-time-string "%H" (current-time)))) --with string variant"
 ;; (if (> 0 1) '"else?") =>  return nil
 ;;Test: (cond ((< 19 7 ) "b")   ((> 6 7 ) "b")   (t "w"))
-(cond ((< 19  (nth 2 (decode-time))) (load-dark-theme)) 
-      ((> 6   (nth 2 (decode-time))) (load-dark-theme))       
-      (t (load-theme 'doom-tomorrow-day))) 
+(cond ((< 19  (nth 2 (decode-time))) (load-theme 'doom-zenburn)) 
+      ((> 6   (nth 2 (decode-time))) (load-theme 'doom-zenburn))       
+      (t (load-theme 'doom-tomorrow-day))) ) 
+
+
 
 ;; Enable flashing mode-line on errors
 (doom-themes-visual-bell-config)
