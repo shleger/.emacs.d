@@ -209,17 +209,30 @@
 (require 'vlf-setup) ;;--no-before-install-stable-melpa
 
 
-(run-at-time 2 3600 'saa/load-timed-theme)
-(defun saa/load-timed-theme ()
+
+
+;; (defun saa/load-timed-theme2 (dawn)  (message dawn))
+;; (saa/load-timed-theme2 "fff")
+
+;;(run-at-time 2 3600 'saa/load-timed-theme)
+(defun saa/load-timed-theme (light dawn dark dusk)
   "Dark theme for night and day with timer"
 
 ;;day | night theme
 ;;"(string-to-number (format-time-string "%H" (current-time)))) --with string variant"
 ;; (if (> 0 1) '"else?") =>  return nil
 ;;Test: (cond ((< 19 7 ) "b")   ((> 6 7 ) "b")   (t "w"))
-(cond ((< 19  (nth 2 (decode-time))) (load-theme 'doom-zenburn)) 
-      ((> 6   (nth 2 (decode-time))) (load-theme 'doom-zenburn))       
-      (t (load-theme 'doom-tomorrow-day))) ) 
+(cond ((< dusk  (nth 2 (decode-time))) (load-theme dark)) 
+      ((> dawn   (nth 2 (decode-time))) (load-theme dark))       
+      (t (load-theme light)))
+
+(let ((secondsPart ":00") (oneDayInSeconds 86400 )) 
+
+
+(run-at-time (concatenate 'string (number-to-string dusk) secondsPart) oneDayInSeconds 'load-theme dark) 
+(run-at-time (concatenate 'string (number-to-string dawn) secondsPart) oneDayInSeconds 'load-theme light) )) 
+
+(saa/load-timed-theme 'doom-tomorrow-day 6 'doom-zenburn 19)
 
 
 
