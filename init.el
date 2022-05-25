@@ -954,7 +954,7 @@
   (deft-directory my-org-roam-dir))
 
 
-
+;; search from selected string in buffer
 ;; https://www.reddit.com/r/emacs/comments/2amn1v/comment/cixq7zx/?utm_source=share&utm_medium=web2x&context=3
 (defadvice isearch-mode (around isearch-mode-default-string (forward &optional regexp op-fun recursive-edit word-p) activate)
   (if (and transient-mark-mode mark-active (not (eq (mark) (point))))
@@ -967,3 +967,8 @@
           (goto-char (mark))
           (isearch-repeat-forward)))
     ad-do-it))
+
+
+;; configure for aspell checker
+(setq ispell-program-name "aspell")
+(setq ispell-extra-args '("--camel-case")) ;; You could add extra option "--camel-case" for camel case code spell checking if Aspell 0.60.8+ is installed
