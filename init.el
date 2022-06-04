@@ -409,6 +409,10 @@
   ;; `M-x package-install [ret] company`
   (company-mode +1))
 
+;; hooks
+;;https://dev.to/viglioni/how-i-set-up-my-emacs-for-typescript-3eeh -- typescript-mode
+(add-hook 'before-save-hook 'tide-format-before-save)
+
 ;; aligns annotation to the right hand side
 (setq company-tooltip-align-annotations t)
 
