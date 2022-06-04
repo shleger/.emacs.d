@@ -181,13 +181,10 @@
 ;;local
 (global-set-key (kbd "C-d") 'duplicate-line)
 (global-set-key (kbd "C-S-f") 'grep-find)
-(global-set-key (kbd "C-/") 'comment-region)
-(global-set-key (kbd "C-?") 'uncomment-region)
-(global-set-key (kbd "<escape>") 'keyboard-quit)
+(global-set-key (kbd "C-/") 'comment-line) 
+(global-set-key (kbd "<escape>") 'keyboard-quit) ;
 (global-set-key (kbd "C-<delete>") 'kill-whitespace-or-word)
 (global-set-key (kbd "M-<SPC>") 'company-complete)
-
-
 
 ;;helm
 (global-set-key (kbd "C-f") 'helm-find)
@@ -357,47 +354,6 @@
 ;;(minimap-mode 1)
 ;; FIXME Invalid face attribute :foreground nil
 
-(require 'lsp)
-(require 'lsp-haskell)
-;;Hooks so haskell and literate haskell major modes trigger LSP setup
-(add-hook 'haskell-mode-hook #'lsp)
-(add-hook 'haskell-literate-mode-hook #'lsp)
-
-(require 'haskell-interactive-mode)
-(require 'haskell-process)
-(add-hook 'haskell-mode-hook 'interactive-haskell-mode)
-
-;; https://stackoverflow.com/a/71212327
-(defun my-haskell-load-and-run ()
-  "Loads and runs the current Haskell file main function."
-  (interactive)
-  (haskell-process-load-file)
-  (haskell-interactive-mode-run-expr "main"))
-
-
-;;override find refs
-;;(define-key haskell-mode-map (kbd "M-/") 'xref-find-definitions) ;; experemantal
-(define-key haskell-mode-map (kbd "M-/") 'lsp-find-references) ;; find usage
-(define-key haskell-mode-map (kbd "S-<f2>") 'lsp-rename) ;; rename
-(define-key (current-global-map) [remap haskell-mode-jump-to-def-or-tag] 'lsp-find-definition) ;; override M-. in haskell-mode (lsp)
-
-;; override key for 'haskell-process-cabal-build with interactive run
-(define-key interactive-haskell-mode-map  (kbd "C-c C-c") 'my-haskell-load-and-run )
-;OR
-;; (defun my-haskell-mode-hook ()
-;;   (local-set-key (kbd "C-c c") 'my-haskell-load-and-run)) 
-;; (add-hook 'haskell-mode-hook 'my-haskell-mode-hook)
-
-
-;; enable formatter
-(use-package ormolu
-  :hook (haskell-mode . ormolu-format-on-save-mode)
-  :bind
-  (:map haskell-mode-map
-    ("C-c f" . ormolu-format-buffer)))
-;; (require  'ormolu)
-;; (add-hook 'haskell-mode-hook 'ormolu-format-on-save-mode)
-
 
 ;;return to previos buffer
 (global-set-key (kbd "M-o")  'mode-line-other-buffer)
@@ -492,6 +448,49 @@
 (setq google-translate-translation-directions-alist '(("en" . "ru")))
 
 
+;;https://github.com/CSRaghunandan/.emacs.d/blob/master/setup-files/setup-haskell.el
+(use-package lsp-haskell)
+(use-package haskell-mode
+  :hook
+  ((haskell-mode . (lambda ()
+                     (lsp)
+		     (interactive-haskell-mode)
+                     (my-haskell-mode-hook)
+                     (company-mode)
+                     (haskell-collapse-mode))))
+  :config
+
+  ;; https://stackoverflow.com/a/71212327
+  (defun my-haskell-load-and-run ()
+    "Loads and runs the current Haskell file main function."
+    (interactive)
+    (haskell-process-load-file)
+    (haskell-interactive-mode-run-expr "main"))
+
+  ;; ;; format and organize imports before save
+  ;; (defun lsp-haskell-save-hooks()
+  ;;   (add-hook 'before-save-hook  #'lsp-format-buffer t t)
+  ;;   (add-hook 'before-save-hook  #'lsp-organize-imports t t))
+  ;;   (add-hook 'haskell-mode-hook #'lsp-haskell-save-hooks)
+
+  (defun my-haskell-mode-hook ()
+    "Hook for `haskell-mode'."
+    (define-key haskell-mode-map (kbd "M-/") 'lsp-find-references) ;; find usage
+    (define-key haskell-mode-map (kbd "S-<f2>") 'lsp-rename) ;; rename
+
+    (define-key interactive-haskell-mode-map  (kbd "C-c C-c") 'my-haskell-load-and-run ) ;; run
+    ;OR
+    ;; (defun my-haskell-mode-hook ()
+    ;;   (local-set-key (kbd "C-c c") 'my-haskell-load-and-run)) 
+    ;; (add-hook 'haskell-mode-hook 'my-haskell-mode-hook)
+
+    ;; TODO 
+    ;; (set (make-local-variable 'company-backends)
+    ;;      '((company-capf company-files :with company-yasnippet)
+    ;;        (company-dabbrev-code company-dabbrev)))
+
+    ))
+
 (use-package lsp-mode
   :init
   ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
@@ -511,14 +510,26 @@
      ("pyls.plugins.mccabe.enabled" nil t)
      ("pyls.plugins.pyflakes.enabled" nil t)))
   :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
-         (python-mode . lsp)
-	 (haskell-mode . lsp)
+         (python-mode  . lsp)
+
+	 ;; (haskell-mode . lsp)
+         ;; (haskell-mode . interactive-haskell-mode)
+	 ;; (haskell-literate-mode . lsp)
+
+
 ;;	 (java-mode . lsp)
 ;;	 (typescript-mode . lsp)
 ;;	 (json-mode . lsp)
          ;; if you want which-key integration
          (lsp-mode . lsp-enable-which-key-integration))
   :commands lsp)
+
+;; enable formatter
+(use-package ormolu
+  :hook (haskell-mode . ormolu-format-on-save-mode)
+  :bind
+  (:map haskell-mode-map
+    ("C-c f" . ormolu-format-buffer)))
 
 ;; if you are helm user
 (use-package helm-lsp :commands helm-lsp-workspace-symbol)
@@ -552,15 +563,16 @@
                 lsp-ui-peek-list-width 60
                 lsp-ui-peek-peek-height 20
 
+		;; lsp-ui-doc-delay 5
+                ;; lsp-ui-doc-position 'bottom
+                ;; lsp-ui-doc-alignment 'frame
+                ;; lsp-ui-doc-header nil
+                ;; lsp-ui-doc-include-signature t
+                ;; lsp-ui-doc-use-childframe t
+		lsp-ui-doc-show-with-cursor nil
+
 		lsp-ui-imenu-enable t
-        	lsp-ui-imenu-kind-position 'top
-		
-		lsp-ui-doc-delay 5
-                lsp-ui-doc-position 'bottom
-                lsp-ui-doc-alignment 'frame
-                lsp-ui-doc-header nil
-                lsp-ui-doc-include-signature t
-                lsp-ui-doc-use-childframe t)
+        	lsp-ui-imenu-kind-position 'top)
   :bind
   (:map lsp-mode-map
 	("C-c m" . lsp-ui-imenu)
