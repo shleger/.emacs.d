@@ -409,13 +409,10 @@
   ;; `M-x package-install [ret] company`
   (company-mode +1))
 
-;; hooks
-;;https://dev.to/viglioni/how-i-set-up-my-emacs-for-typescript-3eeh -- typescript-mode
-(add-hook 'before-save-hook 'tide-format-before-save)
-
 ;; aligns annotation to the right hand side
 (setq company-tooltip-align-annotations t)
 
+;;https://dev.to/viglioni/how-i-set-up-my-emacs-for-typescript-3eeh -- typescript-mode
 ;; formats the buffer before saving
 (add-hook 'before-save-hook 'tide-format-before-save)
 (add-hook 'typescript-mode-hook #'setup-tide-mode)
@@ -494,6 +491,20 @@
     ;;        (company-dabbrev-code company-dabbrev)))
 
     ))
+
+;; https://discuss.daml.com/t/daml-syntax-highlighting-on-emacs/3174
+(use-package daml-mode
+  :load-path "daml-mode/"
+  :mode "\\.daml\\'"
+  :bind (([remap haskell-mode-jump-to-def-or-tag] . lsp-find-definition)
+	 :map daml-mode-map
+         ("M-n" . flymake-goto-next-error)
+         ("M-p" . flymake-goto-next-error)
+         ("<tab>" . haskell-indent-cycle))
+  :config
+  (require 'lsp-daml)
+)
+
 
 (use-package lsp-mode
   :init
