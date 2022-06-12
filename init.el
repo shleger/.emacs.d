@@ -504,6 +504,9 @@
          ("<tab>" . haskell-indent-cycle))
   :config
   (require 'lsp-daml)
+  ;; (setq lsp-daml-extra-arguments '("--scenarios" "no" "--telemetry" "--ghc-option" "-XMonoLocalBinds" "--ghc-option" "-W" "--ghc-option" "-Wno-unused-binds" "--ghc-option" "-Wno-unused-matches" "--RTS" "--jobs" "16" "+RTS" "-N16" "-H10G" "-M12G" "-A20M" "-RTS"))
+  ;; OR ("--RTS" "+RTS" "-M6G" "-N") -- ;;https://discuss.daml.com/t/daml-on-vim/465/3
+  
   )
 
 (with-eval-after-load 'flycheck (flycheck-pos-tip-mode))
@@ -515,7 +518,10 @@
   (setq lsp-idle-delay 0.5
         lsp-enable-symbol-highlighting t
         lsp-enable-snippet nil  ;; Not supported by company capf, which is the recommended company backend
-        lsp-pyls-plugins-flake8-enabled t)
+        lsp-pyls-plugins-flake8-enabled t
+	;; lsp-log-io t
+	;; lsp-server-trace "verbose"
+	)
   (lsp-register-custom-settings
    '(("pyls.plugins.pyls_mypy.enabled" t t)
      ("pyls.plugins.pyls_mypy.live_mode" nil t)
@@ -951,6 +957,11 @@
   :ensure t
   :init
   (setq org-roam-v2-ack t)
+  
+  (setq org-hide-emphasis-markers t) ;; remove asterics from *bold* and other type formatting in org-mode
+  (defun bolding ()      (interactive) (org-emphasize ?*)) ;; ?* char parameter for bold
+  (defun emphasizeing () (interactive) (org-emphasize ))
+  
   :custom
   (org-roam-directory my-org-roam-dir)
   (org-roam-completion-everywhere t)
@@ -962,6 +973,8 @@
          ("C-c n i" . org-roam-node-insert)
          :map org-mode-map
          ("C-M-i" . completion-at-point)
+         ("C-b" . bolding )  ;; hotkey for bold formatting
+         ("C-i" . emphasizeing )  ;; hotkey for formatting with variants
          :map org-roam-dailies-map
          ("Y" . org-roam-dailies-capture-yesterday)
          ("T" . org-roam-dailies-capture-tomorrow))
