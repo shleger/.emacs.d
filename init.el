@@ -974,7 +974,7 @@
          :map org-mode-map
          ("C-M-i" . completion-at-point)
          ("C-b" . bolding )  ;; hotkey for bold formatting
-         ("C-M-b" . emphasizeing )  ;; hotkey for formatting with variants
+         ("C-S-b" . emphasizeing )  ;; hotkey for formatting with variants
          :map org-roam-dailies-map
          ("Y" . org-roam-dailies-capture-yesterday)
          ("T" . org-roam-dailies-capture-tomorrow))
