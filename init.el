@@ -98,7 +98,7 @@
  '(org-agenda-files '("~/my/org/todo.org"))
  '(package-check-signature nil)
  '(package-selected-packages
-   '(flycheck-pos-tip deft org-roam ormolu dockerfile-mode solidity-mode which-key shackle helm jenkinsfile-mode rustic plantuml-mode org-download alert org-alert lsp-java diff-hl treemacs-persp treemacs-magit treemacs-icons-dired treemacs-projectile projectile treemacs-evil use-package all-the-icons-dired doom-themes web-mode tide graphql-mode yaml-mode all-the-icons good-scroll minimap ranger lsp-treemacs lv lsp-mode vyper-mode virtualenvwrapper jedi yafolding vimish-fold magit elisp-format logview vlf elpy google-translate json-mode exec-path-from-shell list-packages-ext))
+   '(minions flycheck-pos-tip deft org-roam ormolu dockerfile-mode solidity-mode which-key shackle helm jenkinsfile-mode rustic plantuml-mode org-download alert org-alert lsp-java diff-hl treemacs-persp treemacs-magit treemacs-icons-dired treemacs-projectile projectile treemacs-evil use-package all-the-icons-dired doom-themes web-mode tide graphql-mode yaml-mode all-the-icons good-scroll minimap ranger lsp-treemacs lv lsp-mode vyper-mode virtualenvwrapper jedi yafolding vimish-fold magit elisp-format logview vlf elpy google-translate json-mode exec-path-from-shell list-packages-ext))
  '(show-paren-mode t))
 
 (windmove-default-keybindings 'meta) ;; alt+ arrows moves coursor
@@ -287,12 +287,20 @@
 
 
 ;; backup save dir
-(defun make-backup-file-name (FILE)                                             
+(defun my-make-backup-file-name (FILE)                                             
   (let ((dirname (concat "~/.emacs.d/backups/"                                    
                          (format-time-string "%y/%m/%d/"))))                    
     (if (not (file-exists-p dirname))                                           
         (make-directory dirname t))                                             
     (concat dirname (file-name-nondirectory FILE))))
+(setq make-backup-file-name-function 'my-make-backup-file-name)
+
+
+;; https://github.com/tarsius/minions
+;; hide minor modes list 
+(use-package minions
+  :config (minions-mode 1))
+
 
 
 ;;findout wich face under coursor
