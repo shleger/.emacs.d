@@ -98,7 +98,7 @@
  '(org-agenda-files '("~/my/org/todo.org"))
  '(package-check-signature nil)
  '(package-selected-packages
-   '(minions flycheck-pos-tip deft org-roam ormolu dockerfile-mode solidity-mode which-key shackle helm jenkinsfile-mode rustic plantuml-mode org-download alert org-alert lsp-java diff-hl treemacs-persp treemacs-magit treemacs-icons-dired treemacs-projectile projectile treemacs-evil use-package all-the-icons-dired doom-themes web-mode tide graphql-mode yaml-mode all-the-icons good-scroll minimap ranger lsp-treemacs lv lsp-mode vyper-mode virtualenvwrapper jedi yafolding vimish-fold magit elisp-format logview vlf elpy google-translate json-mode exec-path-from-shell list-packages-ext))
+   '(helm-bibtex org-ref minions flycheck-pos-tip deft org-roam ormolu dockerfile-mode solidity-mode which-key shackle helm jenkinsfile-mode rustic plantuml-mode org-download alert org-alert lsp-java diff-hl treemacs-persp treemacs-magit treemacs-icons-dired treemacs-projectile projectile treemacs-evil use-package all-the-icons-dired doom-themes web-mode tide graphql-mode yaml-mode all-the-icons good-scroll minimap ranger lsp-treemacs lv lsp-mode vyper-mode virtualenvwrapper jedi yafolding vimish-fold magit elisp-format logview vlf elpy google-translate json-mode exec-path-from-shell list-packages-ext))
  '(show-paren-mode t))
 
 (windmove-default-keybindings 'meta) ;; alt+ arrows moves coursor
@@ -364,7 +364,7 @@
 
 
 ;;return to previos buffer
-(global-set-key (kbd "M-o")  'mode-line-other-buffer)
+(global-set-key (kbd "C-<tab>")  'mode-line-other-buffer)
 
 
 ;;start ranger - file manager
@@ -983,12 +983,14 @@
          ("C-M-i" . completion-at-point)
          ("C-b" . bolding )  ;; hotkey for bold formatting
          ("C-S-b" . emphasizeing )  ;; hotkey for formatting with variants
+         ("C-c n b" . orb-note-actions) ;; org-roam-bibtex-mode
          :map org-roam-dailies-map
          ("Y" . org-roam-dailies-capture-yesterday)
          ("T" . org-roam-dailies-capture-tomorrow))
   :bind-keymap
   ("C-c n d" . org-roam-dailies-map)
   :config
+  (org-roam-bibtex-mode +1)
   (require 'org-roam-dailies) ;; Ensure the keymap is available
   (org-roam-db-autosync-mode))
 
@@ -1002,6 +1004,63 @@
   (deft-use-filter-string-for-filename t)
   (deft-default-extension "org")
   (deft-directory my-org-roam-dir))
+
+(setq bib-files-directory "~/my/org/RoamNotes/references/bibtex-file-1.bib")
+(setq pdf-files-directory "~/my/org/RoamNotes/pdfs")
+(setq notes-files-directory "~/my/org/RoamNotes/notes")
+
+
+(use-package helm-bibtex
+  :config
+  (setq bibtex-completion-bibliography bib-files-directory
+        bibtex-completion-library-path pdf-files-directory
+        bibtex-completion-pdf-field "file"
+        bibtex-completion-notes-path notes-files-directory)
+
+  ;; Símbolos usados para indicar que tiene PDF y notas
+  (setq bibtex-completion-pdf-symbol "⌘")
+  (setq bibtex-completion-notes-symbol "✎")
+  (setq bibtex-completion-additional-search-fields '(journal booktitle))
+
+
+  (setq bibtex-completion-notes-extension ".org")
+  (setq bibtex-completion-pdf-extension '(".pdf" ".djvu" ".txt"))
+
+  ;; Para abrir URL/DOIs
+  (setq bibtex-completion-browser-function
+        (lambda (url _) (start-process "firefox" "*firefox*" "firefox" url)))
+
+
+  (helm-add-action-to-source
+   "Open annotated PDF (if present)" 'helm-bibtex-open-annotated-pdf
+   helm-source-bibtex 1)
+
+  :bind
+  (("<menu>" . helm-command-prefix) ;; <menu> --right click mouse on keyboard
+   :map helm-command-map
+   ( "b" . helm-bibtex)
+   ( "B" . helm-bibtex-with-local-bibliography)
+   ( "n" . helm-bibtex-with-notes)
+   ( "<menu>" . helm-resume)))
+
+(use-package org-ref
+  :after (org bibtex)
+  :init
+  (setq org-ref-default-bibliography bib-files-directory)
+  (setq org-ref-completion-library 'org-ref-helm-cite)
+  (setq org-ref-get-pdf-filename-function 'org-ref-get-pdf-filename-helm-bibtex)
+  (setq org-ref-default-citation-link "citep"))
+
+(use-package org-roam-bibtex
+  :after (org-roam)
+  :config
+  ;(require 'org-ref)
+  (setq orb-note-actions-interface 'hydra)
+  (setq orb-preformat-keywords
+        '("citekey" "title" "url" "author-or-editor" "keywords" "file" "date")
+        orb-process-file-keyword t
+        orb-insert-interface 'helm-bibtex 
+        orb-file-field-extensions '("pdf")))
 
 
 ;; search from selected string in buffer
