@@ -983,7 +983,11 @@
          ("C-M-i" . completion-at-point)
          ("C-b" . bolding )  ;; hotkey for bold formatting
          ("C-S-b" . emphasizeing )  ;; hotkey for formatting with variants
-         ("C-c n b" . orb-note-actions) ;; org-roam-bibtex-mode
+	 ("C-S-<left>" . org-do-promote)
+	 ("C-S-<right>" . org-do-demote)
+	 ("C-S-<up>" . org-move-subtree-up)
+	 ("C-S-<down>" . org-move-subtree-down)
+         
          :map org-roam-dailies-map
          ("Y" . org-roam-dailies-capture-yesterday)
          ("T" . org-roam-dailies-capture-tomorrow))
@@ -1004,6 +1008,7 @@
   (deft-use-filter-string-for-filename t)
   (deft-default-extension "org")
   (deft-directory my-org-roam-dir))
+
 
 (setq bib-files-directory "~/my/org/RoamNotes/references/bibtex-file-1.bib")
 (setq pdf-files-directory "~/my/org/RoamNotes/pdfs")
@@ -1037,6 +1042,7 @@
 
   :bind
   (("<menu>" . helm-command-prefix) ;; <menu> --right click mouse on keyboard
+   ("C-c n b" . orb-note-actions) ;; org-roam-bibtex-mode
    :map helm-command-map
    ( "b" . helm-bibtex)
    ( "B" . helm-bibtex-with-local-bibliography)
@@ -1044,7 +1050,7 @@
    ( "<menu>" . helm-resume)))
 
 (use-package org-ref
-  :after (org bibtex)
+  :after (org-roam-bibtex)
   :init
   (setq org-ref-default-bibliography bib-files-directory)
   (setq org-ref-completion-library 'org-ref-helm-cite)
@@ -1055,12 +1061,14 @@
   :after (org-roam)
   :config
   ;(require 'org-ref)
-  (setq orb-note-actions-interface 'hydra)
+  ;; (setq orb-note-actions-interface 'hydra)
+  (setq orb-note-actions-interface 'helm)
   (setq orb-preformat-keywords
         '("citekey" "title" "url" "author-or-editor" "keywords" "file" "date")
         orb-process-file-keyword t
         orb-insert-interface 'helm-bibtex 
         orb-file-field-extensions '("pdf")))
+
 
 
 ;; search from selected string in buffer
