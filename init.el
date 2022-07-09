@@ -95,10 +95,9 @@
       (aliases))))
  '(lsp-haskell-server-path "~/.ghcup/bin/haskell-language-server-wrapper")
  '(mouse-wheel-tilt-scroll t)
- '(org-agenda-files '("~/my/org/todo.org"))
  '(package-check-signature nil)
  '(package-selected-packages
-   '(helm-bibtex org-ref minions flycheck-pos-tip deft org-roam ormolu dockerfile-mode solidity-mode which-key shackle helm jenkinsfile-mode rustic plantuml-mode org-download alert org-alert lsp-java diff-hl treemacs-persp treemacs-magit treemacs-icons-dired treemacs-projectile projectile treemacs-evil use-package all-the-icons-dired doom-themes web-mode tide graphql-mode yaml-mode all-the-icons good-scroll minimap ranger lsp-treemacs lv lsp-mode vyper-mode virtualenvwrapper jedi yafolding vimish-fold magit elisp-format logview vlf elpy google-translate json-mode exec-path-from-shell list-packages-ext))
+   '(protobuf-mode helm-bibtex org-ref minions flycheck-pos-tip deft org-roam ormolu dockerfile-mode solidity-mode which-key shackle helm jenkinsfile-mode rustic plantuml-mode org-download alert org-alert lsp-java diff-hl treemacs-persp treemacs-magit treemacs-icons-dired treemacs-projectile projectile treemacs-evil use-package all-the-icons-dired doom-themes web-mode tide graphql-mode yaml-mode all-the-icons good-scroll minimap ranger lsp-treemacs lv lsp-mode vyper-mode virtualenvwrapper jedi yafolding vimish-fold magit elisp-format logview vlf elpy google-translate json-mode exec-path-from-shell list-packages-ext))
  '(show-paren-mode t))
 
 (windmove-default-keybindings 'meta) ;; alt+ arrows moves coursor
@@ -527,6 +526,7 @@
         lsp-enable-symbol-highlighting t
         lsp-enable-snippet nil  ;; Not supported by company capf, which is the recommended company backend
         lsp-pyls-plugins-flake8-enabled t
+	lsp-auto-guess-root t
 	;; lsp-log-io t
 	;; lsp-server-trace "verbose"
 	)
@@ -958,6 +958,9 @@
         (backward-char)
         (kill-region p (point)))
     (kill-word 1)))
+
+(setq org-image-actual-width nil) ;; remove setup default image width, now coud be customised with:  #+attr_org: :width 50[px|%]
+(setq org-format-latex-options (plist-put org-format-latex-options :scale 1.5)) ;; scale latex previews
 
 ;;https://systemcrafters.net/build-a-second-brain-in-emacs/keep-a-journal/
 (setq my-org-roam-dir "~/my/org/RoamNotes")
