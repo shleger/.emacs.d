@@ -102,6 +102,7 @@
 
 (windmove-default-keybindings 'meta) ;; alt+ arrows moves coursor
 (save-place-mode 1) ;; save last opened position
+;; (setq org-support-shift-select 'always)
 
 ;;https://stackoverflow.com/a/998472
 ;;add duplicate line
@@ -168,14 +169,23 @@
   (delete-other-windows))
 
 
+(use-package awesome-tab
+  :load-path "~/.emacs.d/awesome-tab"
+  :config
+  (awesome-tab-mode t))
 
-;;local: tab-bar
-(tab-bar-mode 0)
-(setq tab-bar-new-tab-choice "*scratch*")
-(setq tab-bar-show nil)
-(global-set-key (kbd "C-t")   'tab-bar-new-tab)
-(global-set-key (kbd "C-S-t") 'tab-bar-undo-close-tab)
-(global-set-key (kbd "C-w")   'tab-bar-close-tab)
+(global-set-key (kbd "C-M-<left>")   'awesome-tab-backward)
+(global-set-key (kbd "C-M-<right>")   'awesome-tab-forward)
+(global-set-key (kbd "C-M-<up>")   'awesome-tab-forward-group)
+(global-set-key (kbd "C-M-<down>")   'awesome-tab-backward-group)
+
+
+
+(use-package aweshell
+  :load-path "~/.emacs.d/aweshell")
+(global-set-key (kbd "C-M-<tab>")   'aweshell-dedicated-toggle)
+
+
 
 ;;local
 (global-set-key (kbd "C-d") 'duplicate-line)

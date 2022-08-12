@@ -1,3 +1,9 @@
 [submodule "diff-hl"]
 	path = diff-hl
 	url = https://github.com/dgutov/diff-hl
+[submodule "awesome-tab"]
+	path = awesome-tab
+	url = https://github.com/manateelazycat/awesome-tab.git
+[submodule "aweshell"]
+	path = aweshell
+	url = https://github.com/manateelazycat/aweshell.git
