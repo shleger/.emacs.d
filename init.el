@@ -171,8 +171,35 @@
 
 (use-package awesome-tab
   :load-path "~/.emacs.d/awesome-tab"
+  :init
+  (defun my-awesome-tab-hide-tab (x)
+   (let ((name (format "%s" x)))
+    (or
+     ;; Hide tab if current window is not dedicated window.
+     (window-dedicated-p (selected-window))
+
+     ;; Hide sdcv tab.
+     (string-prefix-p "*sdcv" name)
+
+     ;; Hide tab if current buffer is helm buffer.
+     (string-prefix-p "*helm" name)
+
+     ;; Hide tab if current buffer is flycheck buffer.
+     (string-prefix-p "*flycheck" name)
+
+     ;; Hide blacklist if emacs version < 27 (use header-line).
+     (and (eq awesome-tab-display-line 'header-line)
+          (or (string-prefix-p "*Compile-Log*" name)
+              (string-prefix-p "*Flycheck" name)))
+     (and (string-prefix-p "magit" name)
+               (not (file-name-extension name)))
+     )))
+  (defvar awesome-tab-hide-tab-function 'my-awesome-tab-hide-tab)
+
   :config
-  (awesome-tab-mode t))
+  (awesome-tab-mode t)
+  (my-awesome-tab-hide-tab t)
+  (setq awesome-tab-height 120))
 
 (global-set-key (kbd "C-M-<left>")   'awesome-tab-backward)
 (global-set-key (kbd "C-M-<right>")   'awesome-tab-forward)
@@ -181,9 +208,49 @@
 
 
 
+;; https://jdhao.github.io/2021/09/30/emacs_custom_tabline/
+
+;; (use-package powerline
+;;   :load-path "~/.emacs.d/powerline"
+;;   :config
+;;   (powerline-default-theme))
+
+;; (global-tab-line-mode t)
+;; (setq tab-line-new-button-show nil)  ;; do not show add-new button
+;; (setq tab-line-close-button-show nil)  ;; do not show close button
+;; (setq tab-line-separator "")  ;; set it to empty
+;; (defvar my/tab-height 22)
+;; (defvar my/tab-left (powerline-wave-right 'tab-line nil my/tab-height))
+;; (defvar my/tab-right (powerline-wave-left nil 'tab-line my/tab-height))
+
+;; (defun my/tab-line-tab-name-buffer (buffer &optional _buffers)
+;;   (powerline-render (list my/tab-left
+;;                           (format "%s" (buffer-name buffer))
+;;                           my/tab-right)))
+;; (setq tab-line-tab-name-function #'my/tab-line-tab-name-buffer)
+
+;; ;; tab color settings
+;; (set-face-attribute 'tab-line nil ;; background behind tabs
+;;       :background "gray40"
+;;       :foreground "gray60" :distant-foreground "gray50"
+;;       :height 1.0 :box nil)
+;; (set-face-attribute 'tab-line-tab nil ;; active tab in another window
+;;       :inherit 'tab-line
+;;       :foreground "gray70" :background "gray90" :box nil)
+;; (set-face-attribute 'tab-line-tab-current nil ;; active tab in current window
+;;       :background "#b34cb3" :foreground "white" :box nil)
+;; (set-face-attribute 'tab-line-tab-inactive nil ;; inactive tab
+;;       :background "gray60" :foreground "black" :box nil)
+;; (set-face-attribute 'tab-line-highlight nil ;; mouseover
+;;       :background "white" :foreground 'unspecified)
+
+
 (use-package aweshell
-  :load-path "~/.emacs.d/aweshell")
+  :load-path "~/.emacs.d/aweshell"
+  :config
+  (setq aweshell-auto-suggestion-p nil))
 (global-set-key (kbd "C-M-<tab>")   'aweshell-dedicated-toggle)
+
 
 
 
