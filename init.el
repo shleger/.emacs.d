@@ -193,6 +193,9 @@
               (string-prefix-p "*Flycheck" name)))
      (and (string-prefix-p "magit" name)
                (not (file-name-extension name)))
+     (and (string-prefix-p "*vc" name)
+               (not (file-name-extension name)))
+
      )))
   (defvar awesome-tab-hide-tab-function 'my-awesome-tab-hide-tab)
 
