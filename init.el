@@ -255,6 +255,38 @@
 (global-set-key (kbd "C-M-<tab>")   'aweshell-dedicated-toggle)
 
 
+(use-package helm
+  :ensure t
+  :config
+  (require 'helm-config)
+  (helm-mode 1)
+  (global-set-key (kbd "C-x C-f") 'helm-find-files)
+  (global-set-key (kbd "M-x") 'helm-M-x)
+  (global-set-key (kbd "C-f") 'helm-find)
+
+  (setq helm-M-x-fuzzy-match t)
+  (define-key helm-map (kbd "C-<tab>") ;;https://stackoverflow.com/a/27652821
+   (lambda ()
+    (interactive)
+     (helm-move-selection-common :where 'edge :direction 'previous)
+     (helm-move-selection-common :where 'line :direction 'next)
+     (helm-move-selection-common :where 'line :direction 'next)
+     (helm-execute-persistent-action)))
+
+      (awesome-tab-build-helm-source)
+
+    
+  :bind (("M-x" . helm-M-x)
+         ("C-x C-f" . helm-find-files)
+         ("C-x b" . helm-buffers-list)
+         ("C-x c o" . helm-occur)
+         ("M-y" . helm-show-kill-ring) ;SC
+         ("C-x r b" . helm-filtered-bookmarks)
+         ;; :map org-mode-map
+	       ;; ("<tab>" .helm-execute-persistent-action )
+	       ;; ("C-S-z" . helm-select-action)
+	 ))
+
 
 
 ;;local
@@ -265,8 +297,6 @@
 (global-set-key (kbd "C-<delete>") 'kill-whitespace-or-word)
 (global-set-key (kbd "M-<SPC>") 'company-complete)
 
-;;helm
-(global-set-key (kbd "C-f") 'helm-find)
 ;;magit
 (global-set-key (kbd "C-x g") 'magit-status)
 
@@ -980,37 +1010,10 @@
 		   ("\\*cider-repl" :regexp t :same nil :other t)))
   (shackle-default-rule nil))
 
-
-(helm-mode 1 )
-(define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
-(define-key helm-map (kbd "C-S-z") 'helm-select-action) 
-(setq helm-M-x-fuzzy-match t)
-(global-set-key (kbd "C-x C-f") 'helm-find-files)
-(global-set-key (kbd "M-x") 'helm-M-x)
-
-(define-key helm-map (kbd "C-<tab>") ;;https://stackoverflow.com/a/27652821
-  (lambda ()
-    (interactive)
-    (helm-move-selection-common :where 'edge :direction 'previous)
-    (helm-move-selection-common :where 'line :direction 'next)
-    (helm-move-selection-common :where 'line :direction 'next)
-    (helm-execute-persistent-action)))
-
+;; Save history 
 (use-package savehist
   :init
   (savehist-mode))
-
-;; (use-package helm
-;;   :ensure t
-;;   :demand
-;;   :bind (("M-x" . helm-M-x)
-;;          ("C-x C-f" . helm-find-files)
-;;          ("C-x b" . helm-buffers-list)
-;;          ("C-x c o" . helm-occur)) ;SC
-;;          ("M-y" . helm-show-kill-ring) ;SC
-;;          ("C-x r b" . helm-filtered-bookmarks) ;SC
-;;   :requires helm-config
-;;   :config (helm-mode 1))
 
 ;;;;;;;;;;;;;;;;;;;
 
