@@ -251,19 +251,19 @@
 (use-package aweshell
   :load-path "~/.emacs.d/aweshell"
   :config
+  (global-set-key (kbd "C-M-<tab>")   'aweshell-dedicated-toggle)
   (setq aweshell-auto-suggestion-p nil))
-(global-set-key (kbd "C-M-<tab>")   'aweshell-dedicated-toggle)
+
+
 
 
 (use-package helm
   :ensure t
   :config
   (require 'helm-config)
-  (helm-mode 1)
   (global-set-key (kbd "C-x C-f") 'helm-find-files)
   (global-set-key (kbd "M-x") 'helm-M-x)
   (global-set-key (kbd "C-f") 'helm-find)
-
   (setq helm-M-x-fuzzy-match t)
   (define-key helm-map (kbd "C-<tab>") ;;https://stackoverflow.com/a/27652821
    (lambda ()
@@ -273,8 +273,8 @@
      (helm-move-selection-common :where 'line :direction 'next)
      (helm-execute-persistent-action)))
 
-      (awesome-tab-build-helm-source)
-
+  (awesome-tab-build-helm-source)
+  (helm-mode 1)
     
   :bind (("M-x" . helm-M-x)
          ("C-x C-f" . helm-find-files)
