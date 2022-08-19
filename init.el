@@ -97,12 +97,12 @@
  '(mouse-wheel-tilt-scroll t)
  '(package-check-signature nil)
  '(package-selected-packages
-   '(protobuf-mode helm-bibtex org-ref minions flycheck-pos-tip deft org-roam ormolu dockerfile-mode solidity-mode which-key shackle helm jenkinsfile-mode rustic plantuml-mode org-download alert org-alert lsp-java diff-hl treemacs-persp treemacs-magit treemacs-icons-dired treemacs-projectile projectile treemacs-evil use-package all-the-icons-dired doom-themes web-mode tide graphql-mode yaml-mode all-the-icons good-scroll minimap ranger lsp-treemacs lv lsp-mode vyper-mode virtualenvwrapper jedi yafolding vimish-fold magit elisp-format logview vlf elpy google-translate json-mode exec-path-from-shell list-packages-ext))
+   '(ox-reveal protobuf-mode helm helm-bibtex org-ref minions flycheck-pos-tip deft org-roam ormolu dockerfile-mode solidity-mode which-key shackle jenkinsfile-mode rustic plantuml-mode org-download alert org-alert lsp-java diff-hl treemacs-persp treemacs-magit treemacs-icons-dired treemacs-projectile projectile treemacs-evil use-package all-the-icons-dired doom-themes web-mode tide graphql-mode yaml-mode all-the-icons good-scroll minimap ranger lsp-treemacs lv lsp-mode vyper-mode virtualenvwrapper jedi yafolding vimish-fold magit elisp-format logview vlf elpy google-translate json-mode exec-path-from-shell list-packages-ext))
  '(show-paren-mode t))
 
 (windmove-default-keybindings 'meta) ;; alt+ arrows moves coursor
 (save-place-mode 1) ;; save last opened position
-;; (setq org-support-shift-select 'always)
+(setq org-support-shift-select 'always) ;; enable shift+arrows in org mode for selection
 
 ;;https://stackoverflow.com/a/998472
 ;;add duplicate line
@@ -259,23 +259,24 @@
 
 (use-package helm
   :ensure t
+  :init
+   (helm-mode 1)
   :config
-  (require 'helm-config)
-  (global-set-key (kbd "C-x C-f") 'helm-find-files)
-  (global-set-key (kbd "M-x") 'helm-M-x)
-  (global-set-key (kbd "C-f") 'helm-find)
-  (setq helm-M-x-fuzzy-match t)
-  (define-key helm-map (kbd "C-<tab>") ;;https://stackoverflow.com/a/27652821
-   (lambda ()
-    (interactive)
-     (helm-move-selection-common :where 'edge :direction 'previous)
-     (helm-move-selection-common :where 'line :direction 'next)
-     (helm-move-selection-common :where 'line :direction 'next)
-     (helm-execute-persistent-action)))
+   (require 'helm-config)
+   (global-set-key (kbd "C-x C-f") 'helm-find-files)
+   (global-set-key (kbd "M-x") 'helm-M-x)
+   (global-set-key (kbd "C-f") 'helm-find)
+   (setq helm-M-x-fuzzy-match t)
+   (awesome-tab-build-helm-source)
 
-  (awesome-tab-build-helm-source)
-  (helm-mode 1)
-    
+   (define-key helm-map (kbd "C-<tab>") ;;https://stackoverflow.com/a/27652821
+     (lambda ()
+      (interactive)
+       (helm-move-selection-common :where 'edge :direction 'previous)
+       (helm-move-selection-common :where 'line :direction 'next)
+       (helm-move-selection-common :where 'line :direction 'next)
+       (helm-execute-persistent-action)))
+
   :bind (("M-x" . helm-M-x)
          ("C-x C-f" . helm-find-files)
          ("C-x b" . helm-buffers-list)
@@ -1055,6 +1056,12 @@
   (setq org-hide-emphasis-markers t) ;; remove asterics from *bold* and other type formatting in org-mode
   (defun bolding ()      (interactive) (org-emphasize ?*)) ;; ?* char parameter for bold
   (defun emphasizeing () (interactive) (org-emphasize ))
+
+  ;;render plant uml in org-mode
+  (setq org-plantuml-jar-path (expand-file-name "/usr/share/java/plantuml/plantuml.jar"))
+  (add-to-list 'org-src-lang-modes '("plantuml" . plantuml))
+  (org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t)))
+
   
   :custom
   (org-roam-directory my-org-roam-dir)
@@ -1094,6 +1101,9 @@
   (deft-use-filter-string-for-filename t)
   (deft-default-extension "org")
   (deft-directory my-org-roam-dir))
+
+;; revail.js presetetion mode for org
+(use-package ox-reveal)
 
 
 (setq bib-files-directory "~/my/org/RoamNotes/references/bibtex-file-1.bib")
