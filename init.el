@@ -837,11 +837,11 @@
         ("C-x t t"   . treemacs)
         ("C-x t B"   . treemacs-bookmark)
         ("C-x t C-t" . treemacs-find-file)
-        ("C-x t M-t" . treemacs-find-tag)))
-
-(use-package treemacs-evil
-  :after (treemacs evil)
-  :ensure t)
+        ("C-x t M-t" . treemacs-find-tag))
+  (:map treemacs-mode-map
+        ("<right>"   . treemacs-RET-action)
+        ("<left>"    . treemacs-RET-action))
+  )
 
 (use-package treemacs-projectile
   :after (treemacs projectile)
