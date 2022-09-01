@@ -146,6 +146,8 @@
 ;; D (kill all marked buffers)
 ;;local: ibuffer
 (global-set-key (kbd "C-x C-b") 'ibuffer)
+(global-set-key (kbd "C-w") 'kill-this-buffer)
+
 ;; Ensure ibuffer opens with point at the current buffer's entry.
 (defadvice ibuffer
   (around ibuffer-point-to-most-recent) ()
@@ -1102,7 +1104,7 @@
   (deft-default-extension "org")
   (deft-directory my-org-roam-dir))
 
-;; revail.js presetetion mode for org
+;; reveal.js presentation mode for org
 (use-package ox-reveal)
 
 
