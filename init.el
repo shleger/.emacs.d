@@ -76,7 +76,7 @@
  ;; If there is more than one, they won't work right.
  '(cua-mode t nil (cua-base))
  '(custom-safe-themes
-   '("333958c446e920f5c350c4b4016908c130c3b46d590af91e1e7e2a0611f1e8c5" "fe2539ccf78f28c519541e37dc77115c6c7c2efcec18b970b16e4a4d2cd9891d" default))
+   '("e1f4f0158cd5a01a9d96f1f7cdcca8d6724d7d33267623cc433fe1c196848554" "443e2c3c4dd44510f0ea8247b438e834188dc1c6fb80785d83ad3628eadf9294" "333958c446e920f5c350c4b4016908c130c3b46d590af91e1e7e2a0611f1e8c5" "fe2539ccf78f28c519541e37dc77115c6c7c2efcec18b970b16e4a4d2cd9891d" default))
  '(datetime-timezone "Europe/Moscow")
  '(display-battery-mode t)
  '(display-time-mode t)
@@ -840,7 +840,7 @@
         ("C-x t M-t" . treemacs-find-tag))
   (:map treemacs-mode-map
         ("<right>"   . treemacs-RET-action)
-        ("<left>"    . treemacs-RET-action))
+        ("<left>"    . treemacs-COLLAPSE-action))
   )
 
 (use-package treemacs-projectile
