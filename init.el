@@ -183,6 +183,9 @@
      ;; Hide sdcv tab.
      (string-prefix-p "*sdcv" name)
 
+     ;;Rust cargo output
+     (string-prefix-p "*cargo" name)
+
      ;; Hide tab if current buffer is helm buffer.
      ;; (string-prefix-p "*helm" name) ;; need press any cay for showing helm content
 
@@ -951,7 +954,7 @@
 		   ("\\*magit" :regexp t :same t :select t)
 		   ("\\*shell.*" :regexp t :same t :select t)
 		   ("\\*PowerShell.*" :regexp t :same t :select t)
-		   ("\\*Cargo.*" :regexp t :other t :select nil)
+;;		   ("\\*Cargo.*" :regexp t :other t :select nil) ;; strage output to treemacs window
 		   ("*Messages*" :select nil :other t)
 		   ("*Proced*" :select t :same t)
 		   ("*Buffer List*" :select t :same t)
