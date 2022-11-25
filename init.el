@@ -184,7 +184,7 @@
      (string-prefix-p "*sdcv" name)
 
      ;; Hide tab if current buffer is helm buffer.
-     (string-prefix-p "*helm" name)
+     ;; (string-prefix-p "*helm" name) ;; need press any cay for showing helm content
 
      ;; Hide tab if current buffer is flycheck buffer.
      (string-prefix-p "*flycheck" name)
@@ -210,44 +210,6 @@
 (global-set-key (kbd "C-M-<right>")   'awesome-tab-forward)
 (global-set-key (kbd "C-M-<up>")   'awesome-tab-forward-group)
 (global-set-key (kbd "C-M-<down>")   'awesome-tab-backward-group)
-
-
-
-;; https://jdhao.github.io/2021/09/30/emacs_custom_tabline/
-
-;; (use-package powerline
-;;   :load-path "~/.emacs.d/powerline"
-;;   :config
-;;   (powerline-default-theme))
-
-;; (global-tab-line-mode t)
-;; (setq tab-line-new-button-show nil)  ;; do not show add-new button
-;; (setq tab-line-close-button-show nil)  ;; do not show close button
-;; (setq tab-line-separator "")  ;; set it to empty
-;; (defvar my/tab-height 22)
-;; (defvar my/tab-left (powerline-wave-right 'tab-line nil my/tab-height))
-;; (defvar my/tab-right (powerline-wave-left nil 'tab-line my/tab-height))
-
-;; (defun my/tab-line-tab-name-buffer (buffer &optional _buffers)
-;;   (powerline-render (list my/tab-left
-;;                           (format "%s" (buffer-name buffer))
-;;                           my/tab-right)))
-;; (setq tab-line-tab-name-function #'my/tab-line-tab-name-buffer)
-
-;; ;; tab color settings
-;; (set-face-attribute 'tab-line nil ;; background behind tabs
-;;       :background "gray40"
-;;       :foreground "gray60" :distant-foreground "gray50"
-;;       :height 1.0 :box nil)
-;; (set-face-attribute 'tab-line-tab nil ;; active tab in another window
-;;       :inherit 'tab-line
-;;       :foreground "gray70" :background "gray90" :box nil)
-;; (set-face-attribute 'tab-line-tab-current nil ;; active tab in current window
-;;       :background "#b34cb3" :foreground "white" :box nil)
-;; (set-face-attribute 'tab-line-tab-inactive nil ;; inactive tab
-;;       :background "gray60" :foreground "black" :box nil)
-;; (set-face-attribute 'tab-line-highlight nil ;; mouseover
-;;       :background "white" :foreground 'unspecified)
 
 
 (use-package aweshell
