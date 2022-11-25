@@ -256,7 +256,8 @@
   (global-set-key (kbd "C-M-<tab>")   'aweshell-dedicated-toggle)
   (setq aweshell-auto-suggestion-p nil))
 
-
+;;from https://sachachua.com/dotemacs/index.html
+(fset 'yes-or-no-p 'y-or-n-p)
 
 
 (use-package helm
@@ -265,9 +266,6 @@
    (helm-mode 1)
   :config
    (require 'helm-config)
-   (global-set-key (kbd "C-x C-f") 'helm-find-files)
-   (global-set-key (kbd "M-x") 'helm-M-x)
-   (global-set-key (kbd "C-f") 'helm-find)
    (setq helm-M-x-fuzzy-match t)
    (awesome-tab-build-helm-source)
 
@@ -286,6 +284,7 @@
          ("C-x C-f" . helm-find-files)
          ("C-x b" . helm-buffers-list)
          ("C-x c o" . helm-occur)
+         ("C-f" . helm-find) 
          ("M-y" . helm-show-kill-ring) ;SC
          ("C-x r b" . helm-filtered-bookmarks)
          ;; :map org-mode-map
