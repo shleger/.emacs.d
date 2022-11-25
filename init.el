@@ -211,13 +211,41 @@ there's a region, all lines that region covers will be duplicated."
 ;;from https://sachachua.com/dotemacs/index.html
 (fset 'yes-or-no-p 'y-or-n-p)
 
+;;Modify the syntax table yourself and tell Emacs you want
+;;it to treat the _ character as a word constituent, like so:
+(modify-syntax-entry ?_ "w")
+
 
 (use-package helm
   :ensure t
   :init
    (helm-mode 1)
   :config
-   (require 'helm-config)
+  (progn
+    (require 'helm-config)
+    (require 'helm-for-files)
+    (setq helm-candidate-number-limit 100)
+    (setq helm-completing-read-handlers-alist
+          '((describe-function)
+            (consult-bookmark)
+            (org-refile-get-location)
+            (consult-outline)
+            (consult-line)
+            (org-olpath-completing-read)
+            (consult-mark)
+            (org-refile)
+            (consult-multi-occur)
+            (describe-variable)
+            (execute-extended-command)
+            (consult-yank)))
+    ;; From https://gist.github.com/antifuchs/9238468
+    (setq helm-idle-delay 0.0 ; update fast sources immediately (doesn't).
+          helm-input-idle-delay 0.01  ; this actually updates things
+                                        ; reeeelatively quickly.
+          helm-yas-display-key-on-candidate t
+          helm-quick-update t
+          helm-M-x-requires-pattern nil
+          helm-ff-skip-boring-files t))
    (setq helm-M-x-fuzzy-match t)
    (awesome-tab-build-helm-source)
 
