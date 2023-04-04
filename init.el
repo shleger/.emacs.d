@@ -27,6 +27,17 @@
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
 
 
+;; In Emacs 24.4, you will also be able to save on frame focus loss thanks to the new focus hooks:
+;; (add-hook 'focus-out-hook 'save-buffer) (to save the active buffer) or
+;; (add-hook 'focus-out-hook (lambda () (save-some-buffers t)))
+;; (to save all open buffers).
+;; https://emacs.stackexchange.com/a/266
+(add-hook 'focus-out-hook 'save-buffer)
+
+;; toggle-truncate-lines by default
+(set-default 'truncate-lines t)
+
+
 ;Relaxing the rather conservative garbage collector can also speed up startup times:
 ;; Minimize garbage collection during startup
 (setq gc-cons-threshold most-positive-fixnum)
@@ -222,7 +233,7 @@ there's a region, all lines that region covers will be duplicated."
    (helm-mode 1)
   :config
   (progn
-    (require 'helm-config)
+ ;;   (require 'helm-config)
     (require 'helm-for-files)
     (setq helm-candidate-number-limit 100)
     (setq helm-completing-read-handlers-alist
@@ -1149,6 +1160,7 @@ there's a region, all lines that region covers will be duplicated."
         orb-insert-interface 'helm-bibtex 
         orb-file-field-extensions '("pdf")))
 
+;; C-c C-c l: markdown-live-preview-mode > *eww* buffer: on .md files
 ;;https://jblevins.org/projects/markdown-mode/
 (use-package markdown-mode
   :ensure t
