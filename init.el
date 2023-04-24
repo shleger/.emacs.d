@@ -27,12 +27,11 @@
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
 
 
-;; In Emacs 24.4, you will also be able to save on frame focus loss thanks to the new focus hooks:
-;; (add-hook 'focus-out-hook 'save-buffer) (to save the active buffer) or
-;; (add-hook 'focus-out-hook (lambda () (save-some-buffers t)))
-;; (to save all open buffers).
-;; https://emacs.stackexchange.com/a/266
-(add-hook 'focus-out-hook 'save-buffer)
+;; https://www.emacswiki.org/emacs/AutoSave
+  (defun save-all ()
+    (interactive)
+    (save-some-buffers t))
+  (add-hook 'focus-out-hook 'save-all)
 
 ;; toggle-truncate-lines by default
 (set-default 'truncate-lines t)
@@ -216,7 +215,7 @@ there's a region, all lines that region covers will be duplicated."
 (use-package aweshell
   :load-path "~/.emacs.d/aweshell"
   :config
-  (global-set-key (kbd "C-M-<tab>")   'aweshell-dedicated-toggle)
+  (global-set-key (kbd "C-`")   'aweshell-dedicated-toggle)
   (setq aweshell-auto-suggestion-p nil))
 
 ;;from https://sachachua.com/dotemacs/index.html
