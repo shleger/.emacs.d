@@ -1,6 +1,6 @@
 ;;https://stackoverflow.com/questions/10092322/how-to-automatically-install-emacs-packages-by-specifying-a-list-of-package-name
 ;; list the packages you want
-(setq package-list '(lsp-haskell lv lsp-mode lsp-ui google-translate yasnippet flymake exec-path-from-shell neotree sbt-mode ensime anaconda-mode company-anaconda meghanada))
+(setq package-list '(lsp-haskell lv lsp-mode lsp-ui google-translate yasnippet flymake exec-path-from-shell sbt-mode ensime anaconda-mode company-anaconda meghanada))
 
 ;;-no-in-stable-melpamelpa:  auto-complete go-autocomplete TODO del
 
@@ -103,11 +103,11 @@
    '(("xxx"
       (regexp . "[0-9]{4}-[01][0-9]-[0-3][0-9][012][0-9]:[0-5][0-9]:[0-9]{8}")
       (aliases))))
- '(lsp-haskell-server-path "~/.ghcup/bin/haskell-language-server-wrapper")
+ '(lsp-haskell-server-path "~/.ghcup/bin/haskell-language-server-wrapper-2.0.0.1")
  '(mouse-wheel-tilt-scroll t)
  '(package-check-signature nil)
  '(package-selected-packages
-   '(terraform-mode journalctl-mode ox-reveal protobuf-mode helm helm-bibtex org-ref minions flycheck-pos-tip deft org-roam ormolu dockerfile-mode solidity-mode which-key shackle jenkinsfile-mode rustic plantuml-mode org-download alert org-alert lsp-java diff-hl treemacs-persp treemacs-magit treemacs-icons-dired treemacs-projectile projectile treemacs-evil use-package all-the-icons-dired doom-themes web-mode tide graphql-mode yaml-mode all-the-icons good-scroll minimap ranger lsp-treemacs lv lsp-mode vyper-mode virtualenvwrapper jedi yafolding vimish-fold magit elisp-format logview vlf elpy google-translate json-mode exec-path-from-shell list-packages-ext))
+   '(treemacs-all-the-icons treemacs-icons-dired terraform-mode journalctl-mode ox-reveal protobuf-mode helm helm-bibtex org-ref minions flycheck-pos-tip deft org-roam ormolu dockerfile-mode solidity-mode which-key shackle jenkinsfile-mode rustic plantuml-mode org-download alert org-alert lsp-java diff-hl treemacs-persp treemacs-magit treemacs-projectile projectile treemacs-evil use-package  doom-themes web-mode tide graphql-mode yaml-mode all-the-icons good-scroll minimap ranger lsp-treemacs lv lsp-mode vyper-mode virtualenvwrapper jedi yafolding vimish-fold magit elisp-format logview vlf elpy google-translate json-mode exec-path-from-shell list-packages-ext))
  '(show-paren-mode t))
 
 (windmove-default-keybindings 'meta) ;; alt+ arrows moves coursor
@@ -330,8 +330,10 @@ there's a region, all lines that region covers will be duplicated."
 (let ((secondsPart ":00") (oneDayInSeconds 86400 )) 
 
 
-(run-at-time (concatenate 'string (number-to-string dusk) secondsPart) oneDayInSeconds 'load-theme dark) 
-(run-at-time (concatenate 'string (number-to-string dawn) secondsPart) oneDayInSeconds 'load-theme light) )) 
+;;(run-at-time (concatatenate 'string (number-to-string dusk) secondsPart) oneDayInSeconds 'load-theme dark) 
+;;(run-at-time (concatatenate 'string (number-to-string dawn) secondsPart) oneDayInSeconds 'load-theme light)
+
+)) 
 
 (saa/load-timed-theme 'doom-tomorrow-day 6 'doom-zenburn 19)
 
@@ -339,9 +341,6 @@ there's a region, all lines that region covers will be duplicated."
 
 ;; Enable flashing mode-line on errors
 (doom-themes-visual-bell-config)
-;; Enable custom neotree theme (all-the-icons must be installed!)
-(doom-themes-neotree-config)
-
 
 ;;java  lang server (auto install eclipse EDT)
 (require 'lsp-java)
@@ -433,7 +432,6 @@ there's a region, all lines that region covers will be duplicated."
  '(diff-removed ((t (:inherit diff-changed :extend t :background "#f4978e" :foreground "black"))))
  '(go-guru-hl-identified-face ((t (:background "SkyBlue"))))
  '(highlight ((t (:background "gold" :foreground "black"))))
- '(neo-file-link-face ((t :inherit default)))
  '(region ((t (:background "goldenrod" :distant-foreground "gtk_selection_fg_color")))))
 
 (use-package flycheck :ensure)
@@ -451,10 +449,8 @@ there's a region, all lines that region covers will be duplicated."
 (require 'go-eldoc)
 (require 'company-go)
 (require 'company-anaconda)
-;;(require 'go-autocomplete)  TODO del
-;;(require 'auto-complete-config) TODO del
-(require 'neotree)
-
+;; (require 'go-autocomplete)  TODO del
+;; (require 'auto-complete-config) TODO del
 
 (require 'google-translate)
 (require 'google-translate-smooth-ui)
@@ -474,7 +470,6 @@ there's a region, all lines that region covers will be duplicated."
 ;;start ranger - file manager
 (global-set-key [C-escape] 'ranger)
 ;;add icons for ranger view
-;;(add-hook 'dired-mode-hook 'all-the-icons-dired-mode) ;; after loading treemacs icons showed 
 
 
 ;;scroll by line
@@ -494,17 +489,6 @@ there's a region, all lines that region covers will be duplicated."
 
 ;;audio bell off      https://www.emacswiki.org/emacs/AlarmBell
 (setq visible-bell 1) 
-
-;;neoTree
-;;(setq neo-theme 'ascii)
-(setq neo-theme (if (display-graphic-p) 'icons 'arrow))
-(setq neo-smart-open t)
-(global-set-key [f8] 'neotree-toggle)
-;;https://github.com/domtronn/all-the-icons.el
-;;+https://github.com/jaypei/emacs-neotree
-;;(require 'all-the-icons)
-(setq neo-vc-integration '(face))
-
 
 ;;tide (typescript+tsx+js) - https://github.com/ananthakumaran/tide
 ;;TypeScript
@@ -561,6 +545,11 @@ there's a region, all lines that region covers will be duplicated."
 (setq google-translate-translation-directions-alist '(("en" . "ru")))
 
 
+;;https://bebyx.co.ua/en/log/emacs-haskell-lsp.html
+;; >> tilda alias (~) works with expand-file-name command only
+(setenv "PATH" (concat (getenv "PATH") ":" (expand-file-name "~/.ghcup/hls/2.0.0.1/bin")))
+(setq exec-path (append exec-path '(expand-file-name "~/.ghcup/hls/2.0.0.1/bin")))
+
 ;;https://github.com/CSRaghunandan/.emacs.d/blob/master/setup-files/setup-haskell.el
 (use-package lsp-haskell)
 (use-package haskell-mode
@@ -571,6 +560,7 @@ there's a region, all lines that region covers will be duplicated."
                      (my-haskell-mode-hook)
                      (company-mode)
                      (haskell-collapse-mode))))
+  (haskell-literate-mode . lsp)
   :config
 
   ;; https://stackoverflow.com/a/71212327
@@ -838,11 +828,6 @@ there's a region, all lines that region covers will be duplicated."
 (use-package treemacs-projectile
   :after (treemacs projectile)
   :ensure t)
-
-(use-package treemacs-icons-dired
-  :after (treemacs dired)
-  :ensure t
-  :config (treemacs-icons-dired-mode))
 
 (use-package treemacs-magit
   :after (treemacs magit)
