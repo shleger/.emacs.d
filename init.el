@@ -12,6 +12,9 @@
 ;; disable tutorial loading buffer
 (setq inhibit-startup-screen t)
 
+;;https://www.emacswiki.org/emacs/EmacsAsDaemon#:~:text=One%20easy%20way%20to%20start,d%2Femacsd.
+(setq server-socket-dir "~/.emacs.d/server")
+1
 ;disable toolbar and menu and scrollabar
 (tool-bar-mode -1)
 (menu-bar-mode -1)
@@ -107,7 +110,7 @@
  '(mouse-wheel-tilt-scroll t)
  '(package-check-signature nil)
  '(package-selected-packages
-   '(treemacs-all-the-icons treemacs-icons-dired terraform-mode journalctl-mode ox-reveal protobuf-mode helm helm-bibtex org-ref minions flycheck-pos-tip deft org-roam ormolu dockerfile-mode solidity-mode which-key shackle jenkinsfile-mode rustic plantuml-mode org-download alert org-alert lsp-java diff-hl treemacs-persp treemacs-magit treemacs-projectile projectile treemacs-evil use-package  doom-themes web-mode tide graphql-mode yaml-mode all-the-icons good-scroll minimap ranger lsp-treemacs lv lsp-mode vyper-mode virtualenvwrapper jedi yafolding vimish-fold magit elisp-format logview vlf elpy google-translate json-mode exec-path-from-shell list-packages-ext))
+   '(helm-projectile treemacs-all-the-icons treemacs-icons-dired terraform-mode journalctl-mode ox-reveal protobuf-mode helm helm-bibtex org-ref minions flycheck-pos-tip deft org-roam ormolu dockerfile-mode solidity-mode which-key shackle jenkinsfile-mode rustic plantuml-mode org-download alert org-alert lsp-java diff-hl treemacs-persp treemacs-magit treemacs-projectile projectile treemacs-evil use-package doom-themes web-mode tide graphql-mode yaml-mode all-the-icons good-scroll minimap ranger lsp-treemacs lv lsp-mode vyper-mode virtualenvwrapper jedi yafolding vimish-fold magit elisp-format logview vlf elpy google-translate json-mode exec-path-from-shell list-packages-ext))
  '(show-paren-mode t))
 
 (windmove-default-keybindings 'meta) ;; alt+ arrows moves coursor
@@ -510,7 +513,7 @@ there's a region, all lines that region covers will be duplicated."
 
 ;;https://dev.to/viglioni/how-i-set-up-my-emacs-for-typescript-3eeh -- typescript-mode
 ;; formats the buffer before saving
-(add-hook 'before-save-hook 'tide-format-before-save)
+;; (add-hook 'before-save-hook 'tide-format-before-save) -- REFORMAT OFF for a while (for review external code).
 (add-hook 'typescript-mode-hook #'setup-tide-mode)
 (setq tide-format-options '(:insertSpaceAfterFunctionKeywordForAnonymousFunctions t :placeOpenBraceOnNewLineForFunctions nil))
 
@@ -613,6 +616,21 @@ there's a region, all lines that region covers will be duplicated."
 
 (with-eval-after-load 'flycheck (flycheck-pos-tip-mode))
 
+
+
+;; (setenv "PYTHONPATH" "site-packages path")
+;; (setenv "LD_LIBRARY_PATH" "lib path");;
+
+(use-package virtualenvwrapper
+  :init
+  (venv-initialize-interactive-shells) ;; if you want interactive shell support
+  (venv-initialize-eshell) ;; if you want eshell support
+  :config
+  (setq venv-location "~/.local"))
+
+(venv-workon "robo")
+;;(defun set-def-venv () (venv-workon "robo"))  
+
 (use-package lsp-mode
   :init
   ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
@@ -620,22 +638,24 @@ there's a region, all lines that region covers will be duplicated."
   (setq lsp-idle-delay 0.5
         lsp-enable-symbol-highlighting t
         lsp-enable-snippet nil  ;; Not supported by company capf, which is the recommended company backend
-        lsp-pyls-plugins-flake8-enabled t
 	;; lsp-auto-guess-root t
 	;; lsp-log-io t
 	;; lsp-server-trace "verbose"
+	;; lsp-pylsp-plugins-pyflakes-enabled t
 	)
-  (lsp-register-custom-settings
-   '(("pyls.plugins.pyls_mypy.enabled" t t)
-     ("pyls.plugins.pyls_mypy.live_mode" nil t)
-     ("pyls.plugins.pyls_black.enabled" t t)
-     ("pyls.plugins.pyls_isort.enabled" t t)
 
+  (lsp-register-custom-settings
+   '(("pylsp.plugins.pyls_mypy.enabled"    t t)
+     ("pylsp.plugins.pyls_mypy.live_mode"  nil t)
+     ("pylsp.plugins.pyls_black.enabled"   t t)
+     ("pylsp.plugins.pyls_isort.enabled"   t t)
+     ;; ("pylsp.plugins.pyflakes.enabled"     t t)
+     ("pylsp.plugins.pycodestyle.enabled"  t t)
      ;; Disable these as they're duplicated by flake8
-     ("pyls.plugins.pycodestyle.enabled" nil t)
-     ("pyls.plugins.mccabe.enabled" nil t)
-     ("pyls.plugins.pyflakes.enabled" nil t)))
+     ("pylsp.plugins.mccabe.enabled"       nil t))
+   )
   :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
+	 ;;(python-mode  . set-def-venv) ;; only next py file worked correctly first is not linted
          (python-mode  . lsp)
 
 	 ;; (haskell-mode . lsp)
@@ -1123,6 +1143,12 @@ there's a region, all lines that region covers will be duplicated."
    ( "B" . helm-bibtex-with-local-bibliography)
    ( "n" . helm-bibtex-with-notes)
    ( "<menu>" . helm-resume)))
+
+;;https://github.com/bbatsov/helm-projectile
+;; helm-projectile-grep and others:
+(use-package helm-projectile
+  :init
+  (helm-projectile-on))
 
 (use-package org-ref
   :after (org-roam-bibtex)
