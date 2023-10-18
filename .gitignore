@@ -4,5 +4,6 @@
 **/backups/
 **/elpa/
 ac-comphist.dat
+.lsp-session*
 
 
