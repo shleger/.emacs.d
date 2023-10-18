@@ -633,7 +633,7 @@ there's a region, all lines that region covers will be duplicated."
 
 (use-package lsp-mode
   :init
-  ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
+  ;; default prefix (Super-l) https://emacs-lsp.github.io/lsp-mode/page/keybindings/
   :config
   (setq lsp-idle-delay 0.5
         lsp-enable-symbol-highlighting t
@@ -681,9 +681,34 @@ there's a region, all lines that region covers will be duplicated."
 (use-package helm-lsp :commands helm-lsp-workspace-symbol)
 (use-package lsp-treemacs :commands lsp-treemacs-errors-list)
 
-;; optionally if you want to use debugger
-(use-package dap-mode)
-;; (use-package dap-LANGUAGE) to load the dap adapter for your language
+;; https://emacs-lsp.github.io/dap-mode/page/configuration/
+(use-package dap-mode
+  :init
+  (setq dap-auto-configure-features '(sessions locals controls tooltip))
+  :config
+  (require 'dap-python)
+  ;; if you installed debugpy, you need to set this
+  ;; https://github.com/emacs-lsp/dap-mode/issues/306
+  (setq dap-python-debugger 'debugpy)
+
+  ;; install gdb lldb
+  (require 'dap-gdb-lldb)
+  (dap-gdb-lldb-setup)  
+  ;; use binary for debug  from folder target/
+  (dap-register-debug-template "Rust::GDB Run Configuration"
+                               (list :type "gdb"
+                                     :request "launch"
+                                     :name "GDB::Run"
+				     :gdbpath "rust-gdb"
+                                     :target nil
+                                     :cwd nil))
+
+  ;; (require 'dap-node)
+  ;; (dap-node-setup)
+
+  (require 'dap-firefox)
+  (dap-firefox-setup))
+
 
 ;; optional if you want which-key integration
 (use-package which-key :config (which-key-mode))
