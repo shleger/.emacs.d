@@ -495,50 +495,50 @@ there's a region, all lines that region covers will be duplicated."
 
 ;;tide (typescript+tsx+js) - https://github.com/ananthakumaran/tide
 ;;TypeScript
-(defun setup-tide-mode ()
-  (interactive)
-  (tide-setup)
-  (flycheck-mode +1)
-  (setq flycheck-check-syntax-automatically '(save mode-enabled))
-  (eldoc-mode +1)
-  (tide-hl-identifier-mode +1)
-  (setq create-lockfiles nil) ;; https://stackoverflow.com/questions/62567370/reactjs-local-server-crashes-after-editing-file-in-emacs-even-without-saving
-  ;; company is an optional dependency. You have to
-  ;; install it separately via package-install
-  ;; `M-x package-install [ret] company`
-  (company-mode +1))
+;; (defun setup-tide-mode ()
+;;   (interactive)
+;;   (tide-setup)
+;;   (flycheck-mode +1)
+;;   (setq flycheck-check-syntax-automatically '(save mode-enabled))
+;;   (eldoc-mode +1)
+;;   (tide-hl-identifier-mode +1)
+;;   (setq create-lockfiles nil) ;; https://stackoverflow.com/questions/62567370/reactjs-local-server-crashes-after-editing-file-in-emacs-even-without-saving
+;;   ;; company is an optional dependency. You have to
+;;   ;; install it separately via package-install
+;;   ;; `M-x package-install [ret] company`
+;;   (company-mode +1))
 
-;; aligns annotation to the right hand side
-(setq company-tooltip-align-annotations t)
+;; ;; aligns annotation to the right hand side
+;; (setq company-tooltip-align-annotations t)
 
 ;;https://dev.to/viglioni/how-i-set-up-my-emacs-for-typescript-3eeh -- typescript-mode
 ;; formats the buffer before saving
 ;; (add-hook 'before-save-hook 'tide-format-before-save) -- REFORMAT OFF for a while (for review external code).
-(add-hook 'typescript-mode-hook #'setup-tide-mode)
-(setq tide-format-options '(:insertSpaceAfterFunctionKeywordForAnonymousFunctions t :placeOpenBraceOnNewLineForFunctions nil))
+;; (add-hook 'typescript-mode-hook #'setup-tide-mode)
+;; (setq tide-format-options '(:insertSpaceAfterFunctionKeywordForAnonymousFunctions t :placeOpenBraceOnNewLineForFunctions nil))
 
-(require 'web-mode)
-
-
-;;TSX
-(add-to-list 'auto-mode-alist '("\\.tsx\\'" . web-mode))
-(add-hook 'web-mode-hook
-          (lambda ()
-            (when (string-equal "tsx" (file-name-extension buffer-file-name))
-              (setup-tide-mode))))
-;; enable typescript-tslint checker
-(flycheck-add-mode 'typescript-tslint 'web-mode)
+;; (require 'web-mode)
 
 
-;;JSX
-(add-to-list 'auto-mode-alist '("\\.jsx\\'" . web-mode))
-(add-hook 'web-mode-hook
-          (lambda ()
-            (when (string-equal "jsx" (file-name-extension buffer-file-name))
-              (setup-tide-mode))))
-;; configure jsx-tide checker to run after your default jsx checker
-(flycheck-add-mode 'javascript-eslint 'web-mode)
-;;(flycheck-add-next-checker 'javascript-eslint 'jsx-tide 'append)
+;; ;;TSX
+;; (add-to-list 'auto-mode-alist '("\\.tsx\\'" . web-mode))
+;; (add-hook 'web-mode-hook
+;;           (lambda ()
+;;             (when (string-equal "tsx" (file-name-extension buffer-file-name))
+;;               (setup-tide-mode))))
+;; ;; enable typescript-tslint checker
+;; (flycheck-add-mode 'typescript-tslint 'web-mode)
+
+
+;; ;;JSX
+;; (add-to-list 'auto-mode-alist '("\\.jsx\\'" . web-mode))
+;; (add-hook 'web-mode-hook
+;;           (lambda ()
+;;             (when (string-equal "jsx" (file-name-extension buffer-file-name))
+;;               (setup-tide-mode))))
+;; ;; configure jsx-tide checker to run after your default jsx checker
+;; (flycheck-add-mode 'javascript-eslint 'web-mode)
+;; ;;(flycheck-add-next-checker 'javascript-eslint 'jsx-tide 'append)
 ;;(setq-default flycheck-disabled-checkers (append flycheck-disabled-checkers '(tsx-tide)))
 
 
@@ -629,7 +629,38 @@ there's a region, all lines that region covers will be duplicated."
   (setq venv-location "~/.local"))
 
 (venv-workon "robo")
-;;(defun set-def-venv () (venv-workon "robo"))  
+;;(defun set-def-venv () (venv-workon "robo"))
+
+(use-package tree-sitter
+  :ensure t
+  :config
+  ;; activate tree-sitter on any buffer containing code for which it has a parser available
+  (global-tree-sitter-mode)
+  ;; you can easily see the difference tree-sitter-hl-mode makes for python, ts or tsx
+  ;; by switching on and off
+  (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
+
+(use-package tree-sitter-langs
+  :ensure t
+  :after tree-sitter)
+
+(use-package typescript-mode
+  :after tree-sitter
+  :config
+  ;; we choose this instead of tsx-mode so that eglot can automatically figure out language for server
+  ;; see https://github.com/joaotavora/eglot/issues/624 and https://github.com/joaotavora/eglot#handling-quirky-servers
+  (define-derived-mode typescriptreact-mode typescript-mode
+    "TypeScript TSX")
+
+  ;; use our derived mode for tsx files
+  (add-to-list 'auto-mode-alist '("\\.tsx?\\'" . typescriptreact-mode))
+  ;; by default, typescript-mode is mapped to the treesitter typescript parser
+  ;; use our derived mode to map both .tsx AND .ts -> typescriptreact-mode -> treesitter tsx
+  (add-to-list 'tree-sitter-major-mode-language-alist '(typescriptreact-mode . tsx)))
+
+(use-package eglot
+  :ensure t)
+
 
 (use-package lsp-mode
   :init
@@ -657,14 +688,13 @@ there's a region, all lines that region covers will be duplicated."
   :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
 	 ;;(python-mode  . set-def-venv) ;; only next py file worked correctly first is not linted
          (python-mode  . lsp)
+	 (typescript-mode . lsp)
 
-	 ;; (haskell-mode . lsp)
          ;; (haskell-mode . interactive-haskell-mode)
 	 ;; (haskell-literate-mode . lsp)
-
+	 ;; (haskell-mode . lsp)
 
 ;;	 (java-mode . lsp)
-;;	 (typescript-mode . lsp)
 ;;	 (json-mode . lsp)
          ;; if you want which-key integration
          (lsp-mode . lsp-enable-which-key-integration))
