@@ -1,5 +1,9 @@
 ;;https://stackoverflow.com/questions/10092322/how-to-automatically-install-emacs-packages-by-specifying-a-list-of-package-name
 ;; list the packages you want
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+
 (setq package-list '(lsp-haskell lv lsp-mode lsp-ui google-translate yasnippet flymake exec-path-from-shell sbt-mode ensime anaconda-mode company-anaconda meghanada))
 
 ;;-no-in-stable-melpamelpa:  auto-complete go-autocomplete TODO del
@@ -110,7 +114,7 @@
  '(mouse-wheel-tilt-scroll t)
  '(package-check-signature nil)
  '(package-selected-packages
-   '(ac-html-csswatcher helm-projectile treemacs-all-the-icons treemacs-icons-dired terraform-mode journalctl-mode ox-reveal protobuf-mode helm helm-bibtex org-ref minions flycheck-pos-tip deft org-roam ormolu dockerfile-mode solidity-mode which-key shackle jenkinsfile-mode rustic plantuml-mode org-download alert org-alert lsp-java diff-hl treemacs-persp treemacs-magit treemacs-projectile projectile treemacs-evil use-package doom-themes web-mode tide graphql-mode yaml-mode all-the-icons good-scroll minimap ranger lsp-treemacs lv lsp-mode vyper-mode virtualenvwrapper jedi yafolding vimish-fold magit elisp-format logview vlf elpy google-translate json-mode exec-path-from-shell list-packages-ext))
+   '(helm-lsp ccls cmake-mode ac-html-csswatcher helm-projectile treemacs-all-the-icons treemacs-icons-dired terraform-mode journalctl-mode ox-reveal protobuf-mode helm helm-bibtex org-ref minions flycheck-pos-tip deft org-roam ormolu dockerfile-mode solidity-mode which-key shackle jenkinsfile-mode rustic plantuml-mode org-download alert org-alert lsp-java diff-hl treemacs-persp treemacs-magit treemacs-projectile projectile treemacs-evil use-package doom-themes web-mode tide graphql-mode yaml-mode all-the-icons good-scroll minimap ranger lsp-treemacs lv lsp-mode vyper-mode virtualenvwrapper jedi yafolding vimish-fold magit elisp-format logview vlf elpy google-translate json-mode exec-path-from-shell list-packages-ext))
  '(show-paren-mode t))
 
 (windmove-default-keybindings 'meta) ;; alt+ arrows moves coursor
@@ -553,6 +557,10 @@ there's a region, all lines that region covers will be duplicated."
 (setenv "PATH" (concat (getenv "PATH") ":" (expand-file-name "~/.ghcup/hls/2.0.0.1/bin")))
 (setq exec-path (append exec-path '(expand-file-name "~/.ghcup/hls/2.0.0.1/bin")))
 
+;; https://emacs-lsp.github.io/lsp-mode/page/performance/
+(setq read-process-output-max (* 1024 1024)) ;; 1mb
+(setq lsp-log-io nil)
+
 ;;https://github.com/CSRaghunandan/.emacs.d/blob/master/setup-files/setup-haskell.el
 (use-package lsp-haskell)
 (use-package haskell-mode
@@ -699,6 +707,44 @@ there's a region, all lines that region covers will be duplicated."
          ;; if you want which-key integration
          (lsp-mode . lsp-enable-which-key-integration))
   :commands lsp)
+
+(use-package ccls
+  :ensure t
+  :config
+  (setq ccls-executable "ccls")
+  (setq lsp-prefer-flymake nil)
+  (setq-default flycheck-disabled-checkers '(c/c++-clang c/c++-cppcheck c/c++-gcc))
+  :hook ((c-mode c++-mode objc-mode) .
+         (lambda () (require 'ccls) (lsp))))
+(use-package flycheck
+  :ensure t)
+(use-package yasnippet
+  :ensure t
+  :config (yas-global-mode))
+(use-package which-key
+  :ensure t
+  :config (which-key-mode))
+(use-package helm-lsp
+  :ensure t)
+(use-package helm
+  :ensure t
+  :config (helm-mode))
+(use-package lsp-treemacs
+  :ensure t)
+
+;;; This will enable emacs to compile a simple cpp single file without any makefile by just pressing [f9] key
+(defun code-compile()
+  (interactive)
+  (unless (file-exists-p "Makefile")
+    (set (make-local-variable 'compile-command)
+	 (let ((file (file-name-nondirectory buffer-file-name)))
+	   (format "%s -o %s %s"
+		   (if (equal (file-name-extension file) "cpp") "g++" "gcc")
+		   (file-name-sans-extension file)
+		   file)))
+    (compile compile-command)))
+ (global-set-key [f9] 'code-compile)
+  
 
 ;; enable formatter
 (use-package ormolu
