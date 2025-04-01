@@ -93,28 +93,52 @@
  ;; If there is more than one, they won't work right.
  '(cua-mode t nil (cua-base))
  '(custom-safe-themes
-   '("e1f4f0158cd5a01a9d96f1f7cdcca8d6724d7d33267623cc433fe1c196848554" "443e2c3c4dd44510f0ea8247b438e834188dc1c6fb80785d83ad3628eadf9294" "333958c446e920f5c350c4b4016908c130c3b46d590af91e1e7e2a0611f1e8c5" "fe2539ccf78f28c519541e37dc77115c6c7c2efcec18b970b16e4a4d2cd9891d" default))
+   '("e8bd9bbf6506afca133125b0be48b1f033b1c8647c628652ab7a2fe065c10ef0"
+     "e1f4f0158cd5a01a9d96f1f7cdcca8d6724d7d33267623cc433fe1c196848554"
+     "443e2c3c4dd44510f0ea8247b438e834188dc1c6fb80785d83ad3628eadf9294"
+     "333958c446e920f5c350c4b4016908c130c3b46d590af91e1e7e2a0611f1e8c5"
+     "fe2539ccf78f28c519541e37dc77115c6c7c2efcec18b970b16e4a4d2cd9891d"
+     default))
  '(datetime-timezone "Europe/Moscow")
  '(display-battery-mode t)
  '(display-time-mode t)
+ '(eglot-confirm-server-edits nil nil nil "Customized with use-package eglot")
  '(haskell-process-auto-import-loaded-modules t)
  '(haskell-process-log t)
  '(haskell-process-suggest-remove-import-lines t)
  '(logview-additional-submodes
-   '(("apix"
-      (format . "LEVEL TIMESTAMP")
-      (levels . "SLF4J")
-      (timestamp)
+   '(("apix" (format . "LEVEL TIMESTAMP") (levels . "SLF4J") (timestamp)
       (aliases))))
  '(logview-additional-timestamp-formats
    '(("xxx"
-      (regexp . "[0-9]{4}-[01][0-9]-[0-3][0-9][012][0-9]:[0-5][0-9]:[0-9]{8}")
+      (regexp
+       . "[0-9]{4}-[01][0-9]-[0-3][0-9][012][0-9]:[0-5][0-9]:[0-9]{8}")
       (aliases))))
  '(lsp-haskell-server-path "~/.ghcup/bin/haskell-language-server-wrapper-2.0.0.1")
  '(mouse-wheel-tilt-scroll t)
  '(package-check-signature nil)
  '(package-selected-packages
-   '(helm-lsp ccls cmake-mode ac-html-csswatcher helm-projectile treemacs-all-the-icons treemacs-icons-dired terraform-mode journalctl-mode ox-reveal protobuf-mode helm helm-bibtex org-ref minions flycheck-pos-tip deft org-roam ormolu dockerfile-mode solidity-mode which-key shackle jenkinsfile-mode rustic plantuml-mode org-download alert org-alert lsp-java diff-hl treemacs-persp treemacs-magit treemacs-projectile projectile treemacs-evil use-package doom-themes web-mode tide graphql-mode yaml-mode all-the-icons good-scroll minimap ranger lsp-treemacs lv lsp-mode vyper-mode virtualenvwrapper jedi yafolding vimish-fold magit elisp-format logview vlf elpy google-translate json-mode exec-path-from-shell list-packages-ext))
+   '(ccls cmake-mode color-theme-sanityinc-tomorrow company-anaconda
+	  company-go dash-functional deft diff-hl dockerfile-mode
+	  doom-themes elpy emacsql-sqlite ensime exec-path-from-shell
+	  expand-region flycheck-eglot flycheck-pos-tip ghub
+	  git-commit go-autocomplete go-direx go-eldoc go-guru
+	  go-rename go-scratch godoctor good-scroll google-translate
+	  gotest graphql graphql-mode gruvbox-theme helm-bibtex
+	  helm-lsp helm-projectile intero jedi jenkinsfile-mode
+	  json-mode json-reformat list-packages-ext logview
+	  lsp-haskell lsp-java lsp-ui magit-popup meghanada minimap
+	  minions monokai-theme orderless org-alert
+	  org-attach-screenshot org-bullets org-download org-ref
+	  org-roam-bibtex ormolu ox-reveal pkg-info plantuml-mode
+	  powerline protobuf-mode ranger rustic selectrum-prescient
+	  shackle smooth-scroll solarized-theme solidity-mode
+	  spacemacs-theme sublimity terraform-mode tide
+	  tree-sitter-langs treemacs-all-the-icons treemacs-evil
+	  treemacs-icons-dired treemacs-magit treemacs-persp
+	  treemacs-projectile typescript-mode use-package vertico
+	  vimish-fold virtualenvwrapper vlf vyper-mode web-mode
+	  websocket which-key yafolding yaml-mode zenburn-theme))
  '(show-paren-mode t))
 
 (windmove-default-keybindings 'meta) ;; alt+ arrows moves coursor
@@ -147,7 +171,7 @@ there's a region, all lines that region covers will be duplicated."
 ;; D (kill all marked buffers)
 ;;local: ibuffer
 (global-set-key (kbd "C-x C-b") 'ibuffer)
-(global-set-key (kbd "C-w") 'kill-this-buffer)
+(global-set-key (kbd "C-w") 'kill-current-buffer)
 
 ;; Ensure ibuffer opens with point at the current buffer's entry.
 (defadvice ibuffer
@@ -453,9 +477,9 @@ there's a region, all lines that region covers will be duplicated."
 ;;=====TODO rm until
 
 
-(require 'go-eldoc)
-(require 'company-go)
-(require 'company-anaconda)
+;; (require 'go-eldoc)
+;; (require 'company-go)
+;; (require 'company-anaconda)
 ;; (require 'go-autocomplete)  TODO del
 ;; (require 'auto-complete-config) TODO del
 
@@ -554,15 +578,50 @@ there's a region, all lines that region covers will be duplicated."
 
 ;;https://bebyx.co.ua/en/log/emacs-haskell-lsp.html
 ;; >> tilda alias (~) works with expand-file-name command only
-(setenv "PATH" (concat (getenv "PATH") ":" (expand-file-name "~/.ghcup/hls/2.0.0.1/bin")))
-(setq exec-path (append exec-path '(expand-file-name "~/.ghcup/hls/2.0.0.1/bin")))
+
+
+;; TODO revert
+;; (setenv "PATH" (concat (getenv "PATH") ":" (expand-file-name "~/.ghcup/hls/2.9.0.1/bin")))
+;; (setq exec-path (append exec-path '(expand-file-name "~/.ghcup/hls/2.9.0.1/bin")))
+
+(setenv "PATH" (concat (getenv "PATH") ":" (expand-file-name "~/.ghcup/bin")))
+(setq exec-path (append exec-path '(expand-file-name "~/.ghcup/bin")))
+
+
 
 ;; https://emacs-lsp.github.io/lsp-mode/page/performance/
 (setq read-process-output-max (* 1024 1024)) ;; 1mb
 (setq lsp-log-io nil)
 
 ;;https://github.com/CSRaghunandan/.emacs.d/blob/master/setup-files/setup-haskell.el
-(use-package lsp-haskell)
+
+;;TODO revert
+;; (use-package lsp-haskell)
+(use-package eglot
+  :ensure t
+  :config
+  (add-hook 'haskell-mode-hook 'eglot-ensure)
+  :config
+  ;; (setq-default eglot-workspace-configuration
+  ;;               '((haskell
+  ;;                  (plugin
+  ;;                   (stan
+  ;;                    (globalOn . :json-false))))))  ;; disable stan
+  :custom
+  (eglot-autoshutdown t)  ;; shutdown language server after closing last file
+  (eglot-confirm-server-initiated-edits nil)  ;; allow edits without confirmation
+  )
+
+(use-package flycheck-eglot
+  :ensure t
+  :after (flycheck eglot)
+  :config
+  (global-flycheck-eglot-mode 1))
+
+
+
+
+
 (use-package haskell-mode
   :hook
   ((haskell-mode . (lambda ()
@@ -606,21 +665,21 @@ there's a region, all lines that region covers will be duplicated."
     ))
 
 ;; https://discuss.daml.com/t/daml-syntax-highlighting-on-emacs/3174
-(use-package daml-mode
-  :load-path "daml-mode/"
-  :mode "\\.daml\\'"
-  :bind (([remap haskell-mode-jump-to-def-or-tag] . lsp-find-definition)
-	 :map daml-mode-map
-         ("C-c e" . flycheck-list-errors)
-         ("M-n"   . flycheck-next-error)
-         ("M-p"   . flycheck-previous-error)
-         ("<tab>" . haskell-indent-cycle))
-  :config
-  (require 'lsp-daml)
-  ;; (setq lsp-daml-extra-arguments '("--scenarios" "no" "--telemetry" "--ghc-option" "-XMonoLocalBinds" "--ghc-option" "-W" "--ghc-option" "-Wno-unused-binds" "--ghc-option" "-Wno-unused-matches" "--RTS" "--jobs" "16" "+RTS" "-N16" "-H10G" "-M12G" "-A20M" "-RTS"))
-  ;; OR ("--RTS" "+RTS" "-M6G" "-N") -- ;;https://discuss.daml.com/t/daml-on-vim/465/3
+;; (use-package daml-mode
+;;   :load-path "daml-mode/"
+;;   :mode "\\.daml\\'"
+;;   :bind (([remap haskell-mode-jump-to-def-or-tag] . lsp-find-definition)
+;; 	 :map daml-mode-map
+;;          ("C-c e" . flycheck-list-errors)
+;;          ("M-n"   . flycheck-next-error)
+;;          ("M-p"   . flycheck-previous-error)
+;;          ("<tab>" . haskell-indent-cycle))
+;;   :config
+;;   (require 'lsp-daml)
+;;   ;; (setq lsp-daml-extra-arguments '("--scenarios" "no" "--telemetry" "--ghc-option" "-XMonoLocalBinds" "--ghc-option" "-W" "--ghc-option" "-Wno-unused-binds" "--ghc-option" "-Wno-unused-matches" "--RTS" "--jobs" "16" "+RTS" "-N16" "-H10G" "-M12G" "-A20M" "-RTS"))
+;;   ;; OR ("--RTS" "+RTS" "-M6G" "-N") -- ;;https://discuss.daml.com/t/daml-on-vim/465/3
   
-  )
+;;   )
 
 (with-eval-after-load 'flycheck (flycheck-pos-tip-mode))
 
