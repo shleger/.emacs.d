@@ -620,11 +620,6 @@ there's a region, all lines that region covers will be duplicated."
   ;;                  (plugin
   ;;                   (stan
   ;;                    (globalOn . :json-false))))))  ;; disable stan
-  :config (add-to-list 'eglot-server-programs
-                       `(rust-mode . ("rust-analyzer" :initializationOptions
-                                     ( :procMacro (:enable t)
-                                       :cargo ( :buildScripts (:enable t)
-                                                :features "all")))))
   :custom
   (eglot-autoshutdown t)  ;; shutdown language server after closing last file
   (eglot-confirm-server-initiated-edits nil)  ;; allow edits without confirmation
@@ -1048,26 +1043,26 @@ there's a region, all lines that region covers will be duplicated."
 (lsp-treemacs-sync-mode 1)
 
 ;; rustic - https://robert.kra.hn/posts/2021-02-07_rust-with-emacs/#rust-analyzer
-;; (use-package rustic
-;;   :ensure
-;;   :bind (:map rustic-mode-map
-;;               ("M-j" . lsp-ui-imenu)
-;;               ("M-?" . lsp-find-references)
-;;               ("C-c C-c l" . flycheck-list-errors)
-;;               ("C-c C-c a" . lsp-execute-code-action)
-;;               ("C-c C-c r" . lsp-rename)
-;;               ("C-c C-c q" . lsp-workspace-restart)
-;;               ("C-c C-c Q" . lsp-workspace-shutdown)
-;;               ("C-c C-c s" . lsp-rust-analyzer-status))
-;;   :config
-;;   ;; uncomment for less flashiness
-;;   ;; (setq lsp-eldoc-hook nil)
-;;   ;; (setq lsp-enable-symbol-highlighting nil)
-;;   ;; (setq lsp-signature-auto-activate nil)
+(use-package rustic
+  :ensure
+  :bind (:map rustic-mode-map
+              ("M-j" . lsp-ui-imenu)
+              ("M-?" . lsp-find-references)
+              ("C-c C-c l" . flycheck-list-errors)
+              ("C-c C-c a" . lsp-execute-code-action)
+              ("C-c C-c r" . lsp-rename)
+              ("C-c C-c q" . lsp-workspace-restart)
+              ("C-c C-c Q" . lsp-workspace-shutdown)
+              ("C-c C-c s" . lsp-rust-analyzer-status))
+  :config
+  ;; uncomment for less flashiness
+  ;; (setq lsp-eldoc-hook nil)
+  ;; (setq lsp-enable-symbol-highlighting nil)
+  ;; (setq lsp-signature-auto-activate nil)
 
-;;   ;; comment to disable rustfmt on save
-;;   ;; (setq rustic-format-on-save t)
-;;   (add-hook 'rustic-mode-hook 'rk/rustic-mode-hook))
+  ;; comment to disable rustfmt on save
+  ;; (setq rustic-format-on-save t)
+  (add-hook 'rustic-mode-hook 'rk/rustic-mode-hook))
 
 (defun rk/rustic-mode-hook ()
   ;; so that run C-c C-c C-r works without having to confirm, but don't try to
@@ -1383,3 +1378,4 @@ there's a region, all lines that region covers will be duplicated."
 ;; configure for aspell checker
 (setq ispell-program-name "aspell")
 (setq ispell-extra-args '("--camel-case")) ;; You could add extra option "--camel-case" for camel case code spell checking if Aspell 0.60.8+ is installed
+
