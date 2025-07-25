@@ -93,7 +93,8 @@
  ;; If there is more than one, they won't work right.
  '(cua-mode t nil (cua-base))
  '(custom-safe-themes
-   '("e8bd9bbf6506afca133125b0be48b1f033b1c8647c628652ab7a2fe065c10ef0"
+   '("5c8a1b64431e03387348270f50470f64e28dfae0084d33108c33a81c1e126ad6"
+     "e8bd9bbf6506afca133125b0be48b1f033b1c8647c628652ab7a2fe065c10ef0"
      "e1f4f0158cd5a01a9d96f1f7cdcca8d6724d7d33267623cc433fe1c196848554"
      "443e2c3c4dd44510f0ea8247b438e834188dc1c6fb80785d83ad3628eadf9294"
      "333958c446e920f5c350c4b4016908c130c3b46d590af91e1e7e2a0611f1e8c5"
@@ -119,16 +120,16 @@
  '(package-check-signature nil)
  '(package-selected-packages
    '(ccls cmake-mode color-theme-sanityinc-tomorrow company-anaconda
-	  company-go dash-functional deft diff-hl dockerfile-mode
-	  doom-themes elpy emacsql-sqlite ensime exec-path-from-shell
-	  expand-region flycheck-eglot flycheck-pos-tip ghub
-	  git-commit go-autocomplete go-direx go-eldoc go-guru
-	  go-rename go-scratch godoctor good-scroll google-translate
-	  gotest graphql graphql-mode gruvbox-theme helm-bibtex
-	  helm-lsp helm-projectile intero jedi jenkinsfile-mode
-	  json-mode json-reformat list-packages-ext logview
-	  lsp-haskell lsp-java lsp-ui magit-popup meghanada minimap
-	  minions monokai-theme orderless org-alert
+	  company-go counsel-etags dash-functional deft diff-hl
+	  dockerfile-mode doom-themes elpy emacsql-sqlite ensime
+	  exec-path-from-shell expand-region flycheck-eglot
+	  flycheck-pos-tip ghub git-commit go-autocomplete go-direx
+	  go-eldoc go-guru go-rename go-scratch godoctor good-scroll
+	  google-translate gotest graphql graphql-mode gruvbox-theme
+	  helm-bibtex helm-lsp helm-projectile intero jedi
+	  jenkinsfile-mode json-mode json-reformat list-packages-ext
+	  logview lsp-haskell lsp-java lsp-ui magit-popup meghanada
+	  minimap minions monokai-theme orderless org-alert
 	  org-attach-screenshot org-bullets org-download org-ref
 	  org-roam-bibtex ormolu ox-reveal pkg-info plantuml-mode
 	  powerline protobuf-mode ranger rustic selectrum-prescient
@@ -595,6 +596,18 @@ there's a region, all lines that region covers will be duplicated."
 
 ;;https://github.com/CSRaghunandan/.emacs.d/blob/master/setup-files/setup-haskell.el
 
+(use-package counsel-etags
+  :ensure t
+  :bind (("C-]" . counsel-etags-find-tag-at-point))
+  :init
+  (add-hook 'prog-mode-hook
+        (lambda ()
+          (add-hook 'after-save-hook
+            'counsel-etags-virtual-update-tags 'append 'local)))
+  :config
+  (setq counsel-etags-update-interval 60)
+  (push "build" counsel-etags-ignore-directories))
+
 ;;TODO revert
 ;; (use-package lsp-haskell)
 (use-package eglot
@@ -607,6 +620,11 @@ there's a region, all lines that region covers will be duplicated."
   ;;                  (plugin
   ;;                   (stan
   ;;                    (globalOn . :json-false))))))  ;; disable stan
+  :config (add-to-list 'eglot-server-programs
+                       `(rust-mode . ("rust-analyzer" :initializationOptions
+                                     ( :procMacro (:enable t)
+                                       :cargo ( :buildScripts (:enable t)
+                                                :features "all")))))
   :custom
   (eglot-autoshutdown t)  ;; shutdown language server after closing last file
   (eglot-confirm-server-initiated-edits nil)  ;; allow edits without confirmation
@@ -766,6 +784,11 @@ there's a region, all lines that region covers will be duplicated."
          ;; if you want which-key integration
          (lsp-mode . lsp-enable-which-key-integration))
   :commands lsp)
+
+;; Generate for ctags
+;; grep 'any.' cabal.project.freeze | cut -d'.' -f2 | cut -d' ' -f1 | xargs -I % cabal get % --destdir=.packages/
+(with-eval-after-load 'lsp-mode
+  (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\.packages\\'"))
 
 (use-package ccls
   :ensure t
@@ -1025,26 +1048,26 @@ there's a region, all lines that region covers will be duplicated."
 (lsp-treemacs-sync-mode 1)
 
 ;; rustic - https://robert.kra.hn/posts/2021-02-07_rust-with-emacs/#rust-analyzer
-(use-package rustic
-  :ensure
-  :bind (:map rustic-mode-map
-              ("M-j" . lsp-ui-imenu)
-              ("M-?" . lsp-find-references)
-              ("C-c C-c l" . flycheck-list-errors)
-              ("C-c C-c a" . lsp-execute-code-action)
-              ("C-c C-c r" . lsp-rename)
-              ("C-c C-c q" . lsp-workspace-restart)
-              ("C-c C-c Q" . lsp-workspace-shutdown)
-              ("C-c C-c s" . lsp-rust-analyzer-status))
-  :config
-  ;; uncomment for less flashiness
-  ;; (setq lsp-eldoc-hook nil)
-  ;; (setq lsp-enable-symbol-highlighting nil)
-  ;; (setq lsp-signature-auto-activate nil)
+;; (use-package rustic
+;;   :ensure
+;;   :bind (:map rustic-mode-map
+;;               ("M-j" . lsp-ui-imenu)
+;;               ("M-?" . lsp-find-references)
+;;               ("C-c C-c l" . flycheck-list-errors)
+;;               ("C-c C-c a" . lsp-execute-code-action)
+;;               ("C-c C-c r" . lsp-rename)
+;;               ("C-c C-c q" . lsp-workspace-restart)
+;;               ("C-c C-c Q" . lsp-workspace-shutdown)
+;;               ("C-c C-c s" . lsp-rust-analyzer-status))
+;;   :config
+;;   ;; uncomment for less flashiness
+;;   ;; (setq lsp-eldoc-hook nil)
+;;   ;; (setq lsp-enable-symbol-highlighting nil)
+;;   ;; (setq lsp-signature-auto-activate nil)
 
-  ;; comment to disable rustfmt on save
-  ;; (setq rustic-format-on-save t)
-  (add-hook 'rustic-mode-hook 'rk/rustic-mode-hook))
+;;   ;; comment to disable rustfmt on save
+;;   ;; (setq rustic-format-on-save t)
+;;   (add-hook 'rustic-mode-hook 'rk/rustic-mode-hook))
 
 (defun rk/rustic-mode-hook ()
   ;; so that run C-c C-c C-r works without having to confirm, but don't try to
