@@ -115,7 +115,7 @@
       (regexp
        . "[0-9]{4}-[01][0-9]-[0-3][0-9][012][0-9]:[0-5][0-9]:[0-9]{8}")
       (aliases))))
- '(lsp-haskell-server-path "~/.ghcup/bin/haskell-language-server-wrapper-2.0.0.1")
+ '(lsp-haskell-server-path "~/.ghcup/bin/haskell-language-server-wrapper")
  '(mouse-wheel-tilt-scroll t)
  '(package-check-signature nil)
  '(package-selected-packages
@@ -608,8 +608,6 @@ there's a region, all lines that region covers will be duplicated."
   (setq counsel-etags-update-interval 60)
   (push "build" counsel-etags-ignore-directories))
 
-;;TODO revert
-;; (use-package lsp-haskell)
 (use-package eglot
   :ensure t
   :config
