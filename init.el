@@ -126,7 +126,7 @@
 	  flycheck-pos-tip ghub git-commit go-autocomplete go-direx
 	  go-eldoc go-guru go-rename go-scratch godoctor good-scroll
 	  google-translate gotest graphql graphql-mode gruvbox-theme
-	  helm-bibtex helm-lsp helm-projectile intero jedi
+	  helm-bibtex helm-lsp helm-projectile hl-todo intero jedi
 	  jenkinsfile-mode json-mode json-reformat list-packages-ext
 	  logview lsp-haskell lsp-java lsp-ui magit-popup meghanada
 	  minimap minions monokai-theme orderless org-alert
@@ -736,9 +736,13 @@ there's a region, all lines that region covers will be duplicated."
   ;; use our derived mode to map both .tsx AND .ts -> typescriptreact-mode -> treesitter tsx
   (add-to-list 'tree-sitter-major-mode-language-alist '(typescriptreact-mode . tsx)))
 
-(use-package eglot
-  :ensure t)
-
+(use-package hl-todo
+      :hook (prog-mode . hl-todo-mode) ; Enable in programming modes
+      :config
+      (setq hl-todo-highlight-punctuation ":" ; Highlight punctuation after keyword
+            hl-todo-keyword-faces `(("TODO"   . "#07e312") ; Define faces for keywords
+                                    ("FIXME" error bold)
+                                    ("HACK" font-lock-constant-face bold))))
 
 (use-package lsp-mode
   :init
