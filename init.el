@@ -608,6 +608,31 @@ there's a region, all lines that region covers will be duplicated."
   (setq counsel-etags-update-interval 60)
   (push "build" counsel-etags-ignore-directories))
 
+;; checkout cabal-fmt, and build with:
+;; cabal install --allow-newer=base 
+(defun current-buffer-cabal-fmt () 
+  "Format current buffer with external COMMAND."
+  (interactive)
+  (shell-command-on-region (point-min) (point-max)
+                           "cabal-fmt" ; == command
+                           (current-buffer)
+                           t
+                           nil
+                           t))
+
+;; TODO place to notes.  Example how to run custom command: 
+;; (defun format-buffer-with-command (command)
+;;   "Format current buffer with external COMMAND."
+;;   (interactive "sCommand: ")
+;;   (shell-command-on-region (point-min) (point-max)
+;;                            command
+;;                            (current-buffer)
+;;                            t
+;;                            nil
+;;                            t))
+
+
+
 (use-package eglot
   :ensure t
   :config
