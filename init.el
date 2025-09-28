@@ -1058,6 +1058,9 @@ there's a region, all lines that region covers will be duplicated."
   :after (treemacs magit)
   :ensure t)
 
+(custom-set-faces
+ '(treemacs-git-ignored-face ((t (:foreground "gray50")))))
+
 (use-package treemacs-persp ;;treemacs-perspective if you use perspective.el vs. persp-mode
   :after (treemacs persp-mode) ;;or perspective vs. persp-mode
   :ensure t
