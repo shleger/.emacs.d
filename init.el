@@ -306,9 +306,12 @@ there's a region, all lines that region covers will be duplicated."
          ("C-x C-f" . helm-find-files)
          ("C-x b" . helm-buffers-list)
          ("C-x c o" . helm-occur)
-         ("C-f" . helm-find) 
+         ;("C-f" . helm-find) 
          ("M-y" . helm-show-kill-ring) ;SC
          ("C-x r b" . helm-filtered-bookmarks)
+         ("C-r" . helm-projectile-rg)
+         ("C-f" . projectile-find-file)
+         ("C-s" . helm-occur)
          ;; :map org-mode-map
 	       ;; ("<tab>" .helm-execute-persistent-action )
 	       ;; ("C-S-z" . helm-select-action)
@@ -464,7 +467,8 @@ there's a region, all lines that region covers will be duplicated."
  '(diff-removed ((t (:inherit diff-changed :extend t :background "#f4978e" :foreground "black"))))
  '(go-guru-hl-identified-face ((t (:background "SkyBlue"))))
  '(highlight ((t (:background "gold" :foreground "black"))))
- '(region ((t (:background "goldenrod" :distant-foreground "gtk_selection_fg_color")))))
+ '(region ((t (:background "goldenrod" :distant-foreground "gtk_selection_fg_color"))))
+ '(treemacs-git-ignored-face ((t (:foreground "gray50")))))
 
 (use-package flycheck :ensure)
 ;;=====TODO rm, used in use-package at the and of this file
@@ -1058,8 +1062,7 @@ there's a region, all lines that region covers will be duplicated."
   :after (treemacs magit)
   :ensure t)
 
-(custom-set-faces
- '(treemacs-git-ignored-face ((t (:foreground "gray50")))))
+
 
 (use-package treemacs-persp ;;treemacs-perspective if you use perspective.el vs. persp-mode
   :after (treemacs persp-mode) ;;or perspective vs. persp-mode
