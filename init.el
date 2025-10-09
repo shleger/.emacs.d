@@ -305,13 +305,13 @@ there's a region, all lines that region covers will be duplicated."
   :bind (("M-x" . helm-M-x)
          ("C-x C-f" . helm-find-files)
          ("C-x b" . helm-buffers-list)
-         ("C-x c o" . helm-occur)
-         ;("C-f" . helm-find) 
          ("M-y" . helm-show-kill-ring) ;SC
          ("C-x r b" . helm-filtered-bookmarks)
-         ("C-r" . helm-projectile-rg)
+         ;;("C-s" . isearch-forward-symbol)
+         ("C-M-r" . helm-projectile-rg)
          ("C-f" . projectile-find-file)
-         ("C-s" . helm-occur)
+         ("C-M-f" . helm-find) 
+         ("C-M-s" . helm-occur)
          ;; :map org-mode-map
 	       ;; ("<tab>" .helm-execute-persistent-action )
 	       ;; ("C-S-z" . helm-select-action)
@@ -467,7 +467,7 @@ there's a region, all lines that region covers will be duplicated."
  '(diff-removed ((t (:inherit diff-changed :extend t :background "#f4978e" :foreground "black"))))
  '(go-guru-hl-identified-face ((t (:background "SkyBlue"))))
  '(highlight ((t (:background "gold" :foreground "black"))))
- '(region ((t (:background "goldenrod" :distant-foreground "gtk_selection_fg_color"))))
+ '(region ((t (:background "#fcfbc7" :distant-foreground "gtk_selection_fg_color"))))
  '(treemacs-git-ignored-face ((t (:foreground "gray50")))))
 
 (use-package flycheck :ensure)
@@ -692,6 +692,7 @@ there's a region, all lines that region covers will be duplicated."
     (define-key haskell-mode-map (kbd "S-<f2>") 'lsp-rename) ;; rename
 
     (define-key interactive-haskell-mode-map  (kbd "C-c C-c") 'my-haskell-load-and-run ) ;; run
+    (define-key haskell-mode-map (kbd "C-c C-q") 'my/haskell-hoogle-at-point)
     ;OR
     ;; (defun my-haskell-mode-hook ()
     ;;   (local-set-key (kbd "C-c c") 'my-haskell-load-and-run)) 
@@ -720,6 +721,16 @@ there's a region, all lines that region covers will be duplicated."
 ;;   ;; OR ("--RTS" "+RTS" "-M6G" "-N") -- ;;https://discuss.daml.com/t/daml-on-vim/465/3
   
 ;;   )
+
+;; Hoogle integration
+(defun my/haskell-hoogle-at-point ()
+  "Search Hoogle for symbol at point."
+  (interactive)
+  (let ((symbol (thing-at-point 'symbol t)))
+    (if symbol
+        (haskell-hoogle symbol)
+      (call-interactively 'haskell-hoogle))))
+
 
 (with-eval-after-load 'flycheck (flycheck-pos-tip-mode))
 
@@ -924,7 +935,10 @@ there's a region, all lines that region covers will be duplicated."
                 ;; lsp-ui-doc-header nil
                 ;; lsp-ui-doc-include-signature t
                 ;; lsp-ui-doc-use-childframe t
-		lsp-ui-doc-show-with-cursor nil
+		;; lsp-ui-doc-show-with-cursor nil
+		lsp-ui-doc-enable t
+	        lsp-ui-doc-header t
+      		lsp-ui-doc-include-signature t		
 
 		lsp-ui-imenu-enable t
         	lsp-ui-imenu-kind-position 'top)
