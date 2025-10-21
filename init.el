@@ -115,21 +115,20 @@
       (regexp
        . "[0-9]{4}-[01][0-9]-[0-3][0-9][012][0-9]:[0-5][0-9]:[0-9]{8}")
       (aliases))))
- '(lsp-haskell-server-path "~/.ghcup/bin/haskell-language-server-wrapper")
  '(mouse-wheel-tilt-scroll t)
  '(package-check-signature nil)
  '(package-selected-packages
    '(ccls cmake-mode color-theme-sanityinc-tomorrow company-anaconda
-	  company-go counsel-etags dash-functional deft diff-hl
-	  dockerfile-mode doom-themes elpy emacsql-sqlite ensime
-	  exec-path-from-shell expand-region flycheck-eglot
+	  company-go consult-todo counsel-etags dash-functional deft
+	  diff-hl dockerfile-mode doom-themes elpy emacsql-sqlite
+	  ensime exec-path-from-shell expand-region flycheck-eglot
 	  flycheck-pos-tip ghub git-commit go-autocomplete go-direx
 	  go-eldoc go-guru go-rename go-scratch godoctor good-scroll
 	  google-translate gotest graphql graphql-mode gruvbox-theme
 	  helm-bibtex helm-lsp helm-projectile hl-todo intero jedi
 	  jenkinsfile-mode json-mode json-reformat list-packages-ext
-	  logview lsp-haskell lsp-java lsp-ui magit-popup meghanada
-	  minimap minions monokai-theme orderless org-alert
+	  logview lsp-haskell lsp-java lsp-ui magit-popup magit-todos
+	  meghanada minimap minions monokai-theme orderless org-alert
 	  org-attach-screenshot org-bullets org-download org-ref
 	  org-roam-bibtex ormolu ox-reveal pkg-info plantuml-mode
 	  powerline protobuf-mode ranger rustic selectrum-prescient
@@ -470,23 +469,9 @@ there's a region, all lines that region covers will be duplicated."
  '(region ((t (:background "#fcfbc7" :distant-foreground "gtk_selection_fg_color"))))
  '(treemacs-git-ignored-face ((t (:foreground "gray50")))))
 
-(use-package flycheck :ensure)
-;;=====TODO rm, used in use-package at the and of this file
-;;(require 'company)
-;;(require 'flycheck)
-;;(require 'yasnippet)
-;;https://github.com/joaotavora/yasnippet -- enable minor mode
-;;(yas-reload-all)
-;;(add-hook 'prog-mode-hook #'yas-minor-mode)
-;;(require 'multi-compile) ;;;;--no in stable melpa:
-;;=====TODO rm until
+(use-package flycheck
+  :ensure t)
 
-
-;; (require 'go-eldoc)
-;; (require 'company-go)
-;; (require 'company-anaconda)
-;; (require 'go-autocomplete)  TODO del
-;; (require 'auto-complete-config) TODO del
 
 (require 'google-translate)
 (require 'google-translate-smooth-ui)
@@ -636,30 +621,40 @@ there's a region, all lines that region covers will be duplicated."
 ;;                            t))
 
 
+;; LSP Haskell integration
+;; (use-package lsp-haskell
+;;   :ensure t
+;;   :after lsp-mode
+;;   :config
+;;   (setq lsp-haskell-server-path "haskell-language-server-wrapper")
+;;   ;; Alternative if using specific GHC version:
+;;   ;; (setq lsp-haskell-server-path "haskell-language-server-9.4.5")
+;;   )
 
 (use-package eglot
   :ensure t
+  :hook
+  (haskell-mode . eglot-ensure)
   :config
-  (add-hook 'haskell-mode-hook 'eglot-ensure)
-  :config
-  ;; (setq-default eglot-workspace-configuration
-  ;;               '((haskell
-  ;;                  (plugin
-  ;;                   (stan
-  ;;                    (globalOn . :json-false))))))  ;; disable stan
+  ;; Configure Haskell Language Server
+  (add-to-list 'eglot-server-programs 
+               '((haskell-mode haskell-cabal-mode) 
+                 . ("haskell-language-server-wrapper" "--lsp")))
+  (setq-default eglot-workspace-configuration
+                '(:haskell (:plugin (:rename (:config (:crossModule t))))))
+    ;; Optional: Better performance settings
+  (setq eglot-sync-connect 1)
+  (setq eglot-connect-timeout 10)
+  (setq eglot-autoshutdown t)  ;; shutdown language server after closing last file
   :custom
-  (eglot-autoshutdown t)  ;; shutdown language server after closing last file
-  (eglot-confirm-server-initiated-edits nil)  ;; allow edits without confirmation
-  )
+  (eglot-confirm-server-initiated-edits nil))  ;; allow edits without confirmation
+  
 
 (use-package flycheck-eglot
   :ensure t
   :after (flycheck eglot)
   :config
   (global-flycheck-eglot-mode 1))
-
-
-
 
 
 (use-package haskell-mode
@@ -689,7 +684,7 @@ there's a region, all lines that region covers will be duplicated."
   (defun my-haskell-mode-hook ()
     "Hook for `haskell-mode'."
     (define-key haskell-mode-map (kbd "M-/") 'lsp-find-references) ;; find usage
-    (define-key haskell-mode-map (kbd "S-<f2>") 'lsp-rename) ;; rename
+    (define-key haskell-mode-map (kbd "C-c r") 'eglot-rename) ;; rename
 
     (define-key interactive-haskell-mode-map  (kbd "C-c C-c") 'my-haskell-load-and-run ) ;; run
     (define-key haskell-mode-map (kbd "C-c C-q") 'my/haskell-hoogle-at-point)
@@ -783,6 +778,27 @@ there's a region, all lines that region covers will be duplicated."
             hl-todo-keyword-faces `(("TODO"   . "#07e312") ; Define faces for keywords
                                     ("FIXME" error bold)
                                     ("HACK" font-lock-constant-face bold))))
+
+;; (use-package flycheck-hl-todo
+;;   :ensure t
+;;   :defer 5 ; Need to be initialized after the rest of checkers
+;;   ;; :straight (:host github :repo "alvarogonzalezsotillo/flycheck-hl-todo")
+;;   :config
+;;  (flycheck-hl-todo-setup)
+;;   (flycheck-hl-todo-enable))
+
+;; (use-package magit-todos
+;;   :after magit
+;;   :config (magit-todos-mode 1))
+
+;; (with-eval-after-load 'magit
+;;   (add-hook 'magit-log-wash-summary-hook
+;;             #'hl-todo-search-and-highlight t)
+;;   (add-hook 'magit-revision-wash-message-hook
+;;             #'hl-todo-search-and-highlight t))
+
+;;(use-package consult-todo :demand t)
+
 
 (use-package lsp-mode
   :init
@@ -929,13 +945,6 @@ there's a region, all lines that region covers will be duplicated."
                 lsp-ui-peek-list-width 60
                 lsp-ui-peek-peek-height 20
 
-		;; lsp-ui-doc-delay 5
-                ;; lsp-ui-doc-position 'bottom
-                ;; lsp-ui-doc-alignment 'frame
-                ;; lsp-ui-doc-header nil
-                ;; lsp-ui-doc-include-signature t
-                ;; lsp-ui-doc-use-childframe t
-		;; lsp-ui-doc-show-with-cursor nil
 		lsp-ui-doc-enable t
 	        lsp-ui-doc-header t
       		lsp-ui-doc-include-signature t		
